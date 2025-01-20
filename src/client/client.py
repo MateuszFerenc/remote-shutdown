@@ -1,13 +1,18 @@
-import http.client
+import socket
 
-if __name__ == "__main__":
-    host = "127.0.0.1"
-    port = 1234
-    conn = http.client.HTTPSConnection(host=host, port=port)
-    conn.request("GET", "/", headers={"Host": host})
-    response = conn.getresponse()
-    print(response.status, response.reason)
+host = "localhost"
+port = 1234
 
+if __name__ == "__main__": 
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sfd:
+        sfd.connect((host, port))
+        sfd.sendall(b"Hello, world")
+        data = sfd.recv(1024)
+
+    print(f"Received {data!r}")
+
+
+# ASYNCIO!!!!!!!!!!!!!!
 # probably it will be better to use an asyncio when using GUI
 # for GUI I'll use PyQt5
 
