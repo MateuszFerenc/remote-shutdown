@@ -8,6 +8,8 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 
+// Klient albo C i wysyła dane do skryptu pythonowego albo całkowicie w pythonie
+
 int main ( int argc, char** argv ){
 
     return EXIT_SUCCESS;

@@ -8,7 +8,7 @@
 
 # Kompilacja i uruchomienie
 
-Pliki z rozszerzeniem **.c** są kompilowane za pomocą polecenia **make**.
+Pliki z rozszerzeniem **.c** są kompilowane za pomocą polecenia **make**.<br>
 Aby uruchomić pliki **.py** należy przygotować środowisko wirtualne:
 ``` ps
 git clone --depth=1 https://git.cs.put.poznan.pl/inf151660/sieci2_projekt_mferenc
