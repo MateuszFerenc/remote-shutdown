@@ -1,1 +1,0 @@
-// Klient albo C i wysyła dane do skryptu pythonowego albo całkowicie w pythonie

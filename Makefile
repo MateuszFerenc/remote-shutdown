@@ -1,3 +1,6 @@
+# TARGET = client
+# SOURCE = client
+
 TARGET = server
 SOURCE = server
 
@@ -9,10 +12,10 @@ DEL = rm
 
 CFLAGS += -O2
 CFLAGS += -Wfatal-errors
-CFLAGS += -Wextra
-CFLAGS += -Wall
-CFLAGS += -fdiagnostics-color=always
+# CFLAGS += -Wextra
+# CFLAGS += -Wall
 CFLAGS += -pipe
+CFLAGS += -Wformat
 CFLAGS += -Werror=format-security
 CFLAGS += -Wundef
 CFLAGS += -Wshadow
@@ -22,8 +25,12 @@ CFLAGS += -Wswitch-default
 CFLAGS += -Wswitch-enum
 CFLAGS += -Wunreachable-code
 
+ifeq ($(DEBUG),1)
 COMPILATION_OUTPUT = 2>$(OUTPUT_DIR)/./"compilation_output_$(@F:.o=).txt"
-
+else
+COMPILATION_OUTPUT =
+CFLAGS += -fdiagnostics-color=always
+endif
 
 all: 	build
 

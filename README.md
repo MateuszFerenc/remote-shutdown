@@ -15,11 +15,11 @@ Usługa wyłączenia obejmuje:
 Pliki z rozszerzeniem **.c** są kompilowane za pomocą polecenia **make**.<br><br>
 Aby uruchomić pliki **.py** należy przygotować środowisko wirtualne:
 ``` ps
-git clone --depth=1 https://git.cs.put.poznan.pl/inf151660/sieci2_projekt_mferenc
+git clone --depth=1 https://git.cs.put.poznan.pl/inf151660/sieci2_projekt_mferenc.git
 
 cd sieci2_projekt_mferenc
 python3 -m venv .venv
-.\.venv\Scripts\activate
+. .venv\Scripts\activate
 pip3 install -r requirements.txt
 python3 src\client\client.py
 ```
@@ -31,4 +31,5 @@ python3 src\client\client.py
 - [ ] Przygotowanie dokumentacji
 - [ ] Podstawowy protokół komunikacji
 - [ ] Zaimplementować wyłaczanie komputera przez aplikację serwera
-- [ ] Przygotować GUI aplikacji klienta
+- [ ] Przygotować wstępne GUI (Qt5)
+- [ ] GUI klienta (Qt5)
