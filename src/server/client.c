@@ -11,6 +11,8 @@
 
 // Just for test purposes
 
+#define buff_size 64U
+
 int __read(int fd, char * buf, int size){
 	int sum = 0, rc = 0;
 	do {
@@ -25,7 +27,7 @@ int __read(int fd, char * buf, int size){
 
 int main ( int argc, char** argv ){
     int fd;
-    char buff[64];
+    char buff[buff_size];
     struct sockaddr_in addr;
 
     struct hostent* family_name;
@@ -45,7 +47,7 @@ int main ( int argc, char** argv ){
     addr.sin_family = AF_INET;
     addr.sin_port = htons(atoi(argv[2]));
 
-    memcpy(&addr.sin_addr.s_addr, family_name->h_addr, family_name->h_length);
+    memcpy(&addr.sin_addr.s_addr, family_name->h_addr_list[0], family_name->h_length);
 
     if ( connect(fd, (struct sockaddr *) &addr, sizeof(addr)) ){
         fprintf(stderr, "Connect failed! Error: %s\n", strerror(errno));
@@ -53,8 +55,8 @@ int main ( int argc, char** argv ){
     }
     
 
-    printf("Wpisz numer indeksu: ");
-    fgets(buff, sizeof(buff), stdin);
+    printf("Wpisz polecenie: ");
+    fgets(buff, buff_size, stdin);
     write(fd, buff, 64);
     int i = __read(fd, buff, 64);
     printf("%s",buff);

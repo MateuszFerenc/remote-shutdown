@@ -13,6 +13,16 @@
 #include <errno.h>
 #include <limits.h>
 
+#include <unistd.h>
+#include <linux/reboot.h>
+#include <sys/reboot.h>
+
+int shutdown() {
+    sync();
+    setuid(0);
+    return reboot(LINUX_REBOOT_CMD_POWER_OFF);
+}
+
 /*
 Kroki budowy serwera:
 1. Utworzenie gniazda
