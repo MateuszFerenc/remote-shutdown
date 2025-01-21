@@ -31,5 +31,7 @@ python3 src\client\client.py
 - [ ] Przygotowanie dokumentacji
 - [ ] Podstawowy protokół komunikacji
 - [ ] Zaimplementować wyłaczanie komputera przez aplikację serwera
-- [ ] Przygotować wstępne GUI (Qt5)
-- [ ] GUI klienta (Qt5)
+- [&check;] Przygotować wstępne GUI (Qt5)
+- [ ] pełne GUI klienta (Qt5)
+- [ ] funkcjonalne GUI klienta (Qt5)
+- [ ] automatyczna konwersja (w Makefile) z **.ui** do **.py** (Qt5)

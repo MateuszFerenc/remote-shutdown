@@ -46,5 +46,8 @@ clean:
 run:	$(OUTPUT_DIR)/./$(TARGET).o
 	./$(OUTPUT_DIR)/./$(TARGET).o
 
+# TODO automated conversion from .ui to .py
+# py -m PyQt5.uic.pyuic -x main_ui.ui -o main_ui.py
+
 .DEFAULTGOAL: all
 .PHONY: all build clean run
