@@ -2,9 +2,10 @@ from PyQt5 import QtWidgets
 from main_ui import Ui_MainWindow
 import socket
 import sys
+import threading
 
 host = "localhost"
-port = 21037
+PORT = 21037
 
 class ApplicationWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -13,15 +14,46 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+
+def discover_servers():
+    found_servers = []
+    # subnet = "192.168.1."
+    subnet = "127.0.0."
+
+    def discover(ip):
+        try:
+            with socket.create_connection((ip, PORT), timeout=1) as sock:
+                sock.sendall(b"HI SERVER")
+                response = sock.recv(64).decode()
+                if response == "HI CLIENT":
+                    found_servers.append(ip)
+        except Exception:
+            pass
+
+    threads = []
+    for i in range(1, 5):
+        ip = f"{subnet}{i}"
+        thread = threading.Thread(target=discover, args=(ip,))
+        thread.start()
+        threads.append(thread)
+
+    for thread in threads:
+        thread.join()
+
+    return found_servers
+
+
 if __name__ == "__main__": 
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sfd:
-        sfd.connect((host, port))
-        sfd.sendall(b"author")
-        data = sfd.recv(64)
+    print("Discovery start...")
+    found_servers = discover_servers()
 
-    print(f"Received {data!r}")
+    if ( len( found_servers ) ):
+        print(f"Found {len( found_servers )} servers:")
+        for server in found_servers:
+            print(f"- {server}")
 
-    app = QtWidgets.QApplication(sys.argv)
-    application = ApplicationWindow()
-    application.show()
-    sys.exit(app.exec_())
+    # app = QtWidgets.QApplication(sys.argv)
+    # application = ApplicationWindow()
+    # application.show()
+    # sys.exit(app.exec_())
+

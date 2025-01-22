@@ -12,6 +12,7 @@
 
 #include <errno.h>
 #include <limits.h>
+#include <fcntl.h>
 
 #include <unistd.h>
 #include <linux/reboot.h>
@@ -23,146 +24,158 @@ int __shutdown( void ) {
     return reboot(LINUX_REBOOT_CMD_POWER_OFF);
 }
 
-/*
-Serwer iteracyjny czy współbieżny (a może select)?
-*/ 
-
 #define SERVER_PORT	21037U
+#define REC_BUFF_SIZE	64
 
-int __read(int fd, char * buf, int size){
-	int sum = 0, rc = 0;
+int __read(int fd, char *buf, unsigned int size){
+	int length = 0, received = 0;
 	do {
-		rc = read(fd, buf, size);
-		if ( rc < 0 ) return rc;
-		buf += rc;
-		size -= rc;
-		sum += rc;
-	} while ( ( *buf - 1 ) != '\n' );
-	return sum;
+		received = recv(fd, buf, size, 0);
+		if ( received < 0 ) return received;
+		buf += received;
+		size -= received;
+		length += received;
+	} while ( received > 0 );	// ( *buf - 1 ) != '\0'
+
+	return length;
+}
+
+void makenonblocking(int fd){
+	int flags = fcntl(fd, F_GETFL, 0);
+	if ( flags < 0 )
+        fprintf(stderr, "fcntl() failed! Error: %s\n", strerror(errno));
+	if ( fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0 )
+        fprintf(stderr, "fcntl() failed! Error: %s\n", strerror(errno));
 }
 
 int main ( void ){
-    int sfd, cfd, rc, fdmax, on = 1, fda, slt, i;
+    int server_fd, client_fd, fd_max, on = 1, fda, i;
     fd_set mask, rmask, wmask, author, hostname;
-    struct sockaddr_in saddr, caddr;
+    struct sockaddr_in server_addr_struct, client_addr_struct;
+	socklen_t socket_length = sizeof(client_addr_struct);
+	static struct timeval timeout;
 
-    char buff[64];
+    char buff[ REC_BUFF_SIZE ];
     int read_len;
 
-    sfd = socket(PF_INET, SOCK_STREAM, 0);
-    if ( sfd < 0 ){
+	memset(&server_addr_struct, 0, sizeof server_addr_struct);
+	memset(&client_addr_struct, 0, sizeof client_addr_struct);
+
+    if ( ( server_fd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP) ) < 0 ){
         fprintf(stderr, "Cannot create socket! Error: %s\n", strerror(errno));
         return EXIT_FAILURE;
     }
 
 
-    if ( setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR, (char*) &on, sizeof(on)) < 0 ){
+    if ( setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int)) < 0 ){
         fprintf(stderr, "setsockopt() failed! Error: %s\n", strerror(errno));
-        close(sfd);
+        close(server_fd);
         return EXIT_FAILURE;
     }
 
-    if ( ioctl(sfd, FIONBIO, (char*) &on) < 0 ){
-        fprintf(stderr, "ioctl() failed! Error: %s\n", strerror(errno));
-        close(sfd);
-        return EXIT_FAILURE;
-    }
+	makenonblocking(server_fd);
 
-    saddr.sin_family = AF_INET;
-    saddr.sin_port = htons(SERVER_PORT);
-    saddr.sin_addr.s_addr = INADDR_ANY;
+    server_addr_struct.sin_family = AF_INET;
+    server_addr_struct.sin_port = htons(SERVER_PORT);
+    server_addr_struct.sin_addr.s_addr = INADDR_ANY;
     
-    if ( bind(sfd, (struct sockaddr*) &saddr, sizeof(saddr)) < 0 ){
+    if ( bind(server_fd, (struct sockaddr*) &server_addr_struct, sizeof(server_addr_struct)) < 0 ){
         fprintf(stderr, "bind() failed! Error: %s\n", strerror(errno));
-        close(sfd);
+        close(server_fd);
         return EXIT_FAILURE;
     }
 
-    if ( listen(sfd, 10) < 0 ){
+    if ( listen(server_fd, 10) < 0 ){
         fprintf(stderr, "listen() failed! Error: %s\n", strerror(errno));
-        close(sfd);
+        close(server_fd);
         return EXIT_FAILURE;
     }
+
+	printf("Listening on port %d...\n", SERVER_PORT);
 
     FD_ZERO(&mask);
     FD_ZERO(&rmask);
     FD_ZERO(&wmask);
-    fdmax = sfd;
+	FD_ZERO(&author);
+    FD_ZERO(&hostname);
+    fd_max = server_fd;
 
     for(;;){
-    	FD_SET(sfd, &rmask);
+    	FD_SET(server_fd, &rmask);
     	wmask = mask;
+
+		timeout.tv_sec  = 3 * 60;
+    	timeout.tv_usec = 0;
     	
-    	rc = select( fdmax + 1, &rmask, &wmask, NULL, NULL );
-    	
-    	if ( rc < 0 ){
-    		fprintf(stderr, "Select() timed out\n");
-    		close(sfd);
+		fda = select( fd_max + 1, &rmask, &wmask, (fd_set *)0, &timeout );
+
+		if ( fda == 0)
+			continue;
+		else
+    	if ( fda < 0 ){
+    		fprintf(stderr, "select() failed! Error: %s\n", strerror(errno));
+    		close(server_fd);
 			return EXIT_FAILURE;
     	}
     	
-    	fda = rc;
-    	
-    	if ( FD_ISSET(sfd, &rmask) ) {
+    	if ( FD_ISSET(server_fd, &rmask) ) {
     		fda -= 1;
-    		slt = sizeof(caddr);
 
-    		cfd = accept(sfd, (struct sockaddr *) &caddr, (socklen_t *)&slt);
-            printf("new connection from %s:%d\n", inet_ntoa((struct in_addr)caddr.sin_addr), ntohs(caddr.sin_port));
+    		client_fd = accept(server_fd, (struct sockaddr *) &client_addr_struct, &socket_length);
+			makenonblocking(client_fd);
+            printf("Got connection from %s:%d\n", inet_ntoa((struct in_addr)client_addr_struct.sin_addr), ntohs(client_addr_struct.sin_port));
 
-    		FD_SET(cfd, &mask);
-    		if ( cfd > fdmax ) fdmax = cfd;
+    		FD_SET(client_fd, &mask);
+    		if ( client_fd > fd_max ) fd_max = client_fd;
     	}
     	
-    	for ( i = sfd + 1; i <= fdmax && fda > 0; i++){
+    	for ( i = server_fd + 1; i <= fd_max && fda > 0; i++){
     		if ( FD_ISSET(i, &wmask) ){
-				printf("write\n");
     			fda -= 1;
     			if ( FD_ISSET(i, &author) ){
-    				write(cfd, "Mateusz Ferenc\n", 14);
+    				write(i, "HI CLIENT", 9);
     				FD_CLR(i, &author);
     			} else 
     			if ( FD_ISSET(i, &hostname) ){
                     char hn[_SC_HOST_NAME_MAX+1];
                     gethostname(hn, _SC_HOST_NAME_MAX+1);
                     int len = sprintf(buff, "%s\n", hn);
-    				write(cfd, buff, len);
+    				write(i, buff, len);
     				FD_CLR(i, &hostname);
     			} else
-    				write(cfd, "Unknown\n", 8);
+    				write(i, "HI CLIENT", 9);
     			
     			close(i);
     			FD_CLR(i, &mask);
-    			if ( i == fdmax ){
-					while ( fdmax > sfd && !FD_ISSET(fdmax, &mask) )
-    					fdmax -= 1;
+    			if ( i == fd_max ){
+					while ( fd_max > server_fd && !FD_ISSET(fd_max, &mask) )
+    					fd_max -= 1;
 				}
-				printf("out1\n");
     		} else
     		if ( FD_ISSET(i, &rmask) ) {
-				printf("read\n");
     			fda -= 1;
-    			read_len = __read(cfd, buff, 64);
+
+				memset(buff, 0, REC_BUFF_SIZE);
+    			read_len = __read( i, buff, REC_BUFF_SIZE );
+
                 if(read_len){
-                	if(strncmp("author", buff, 6) == 0)
+                	if(strncmp("HI SERVER", buff, 9) == 0)
 			        	FD_SET(i, &author);
                     else 
 			    	if(strncmp("hostname", buff, 8) == 0)
 			    		FD_SET(i, &hostname);
                 }
-                printf("buff = %s\n", buff);
     			close(i);
     			FD_CLR(i, &mask);
-    			if ( i == fdmax ){
-					while ( fdmax > sfd && !FD_ISSET(fdmax, &mask) )
-    					fdmax -= 1;
+    			if ( i == fd_max ){
+					while ( fd_max > server_fd && !FD_ISSET(fd_max, &mask) )
+    					fd_max -= 1;
 				}
-				printf("out2\n");
     		}
     	}
     }
 
-    close(sfd);
+    close(server_fd);
 
     return EXIT_SUCCESS;
 }
