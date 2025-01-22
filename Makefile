@@ -7,13 +7,17 @@ SOURCE = server
 DIR = ./src/server
 OUTPUT_DIR = $(DIR)
 
+UI_DIR = ./src/client
+UI_FILES = main_ui
+
 CC = gcc
 DEL = rm
+PY = python3
 
-CFLAGS += -O2
+CFLAGS += -O3
 CFLAGS += -Wfatal-errors
 # CFLAGS += -Wextra
-# CFLAGS += -Wall
+CFLAGS += -Wall
 CFLAGS += -pipe
 CFLAGS += -Wformat
 CFLAGS += -Werror=format-security
@@ -46,8 +50,10 @@ clean:
 run:	$(OUTPUT_DIR)/./$(TARGET).o
 	./$(OUTPUT_DIR)/./$(TARGET).o
 
-# TODO automated conversion from .ui to .py
-# py -m PyQt5.uic.pyuic -x main_ui.ui -o main_ui.py
+gen_ui:		$(UI_DIR)/./$(UI_FILES).py
+
+$(UI_DIR)/./$(UI_FILES).py: $(UI_DIR)/./$(UI_FILES).ui
+	$(PY) -m PyQt5.uic.pyuic -x $< -o $@
 
 .DEFAULTGOAL: all
-.PHONY: all build clean run
+.PHONY: all build clean run gen_ui

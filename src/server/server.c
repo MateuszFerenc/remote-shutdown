@@ -17,24 +17,14 @@
 #include <linux/reboot.h>
 #include <sys/reboot.h>
 
-int shutdown() {
+int __shutdown( void ) {
     sync();
     setuid(0);
     return reboot(LINUX_REBOOT_CMD_POWER_OFF);
 }
 
 /*
-Kroki budowy serwera:
-1. Utworzenie gniazda
-2. Konfiguracja gniazda
-3. inicjalizacja struktury adresowej
-4. Zbindowanie struktury adresowej do gniazda
-5. otwarcie listenera na gnieżdzie
-6. Akceptacja połączenia
-7. Komunikacja
-8. Zakończenie połączenia
-9. Przejdź do 6
-
+Serwer iteracyjny czy współbieżny (a może select)?
 */ 
 
 #define SERVER_PORT	21037U
@@ -55,7 +45,7 @@ int main ( void ){
     int sfd, cfd, rc, fdmax, on = 1, fda, slt, i;
     fd_set mask, rmask, wmask, author, hostname;
     struct sockaddr_in saddr, caddr;
-    static struct timeval timeout;
+
     char buff[64];
     int read_len;
 
@@ -66,13 +56,13 @@ int main ( void ){
     }
 
 
-    if ( setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR, (char*) &on, sizeof(on)) ){
+    if ( setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR, (char*) &on, sizeof(on)) < 0 ){
         fprintf(stderr, "setsockopt() failed! Error: %s\n", strerror(errno));
         close(sfd);
         return EXIT_FAILURE;
     }
 
-    if ( ioctl(sfd, FIONBIO, (char*) &on) ){
+    if ( ioctl(sfd, FIONBIO, (char*) &on) < 0 ){
         fprintf(stderr, "ioctl() failed! Error: %s\n", strerror(errno));
         close(sfd);
         return EXIT_FAILURE;
@@ -82,13 +72,13 @@ int main ( void ){
     saddr.sin_port = htons(SERVER_PORT);
     saddr.sin_addr.s_addr = INADDR_ANY;
     
-    if ( bind(sfd, (struct sockaddr*) &saddr, sizeof(saddr)) ){
+    if ( bind(sfd, (struct sockaddr*) &saddr, sizeof(saddr)) < 0 ){
         fprintf(stderr, "bind() failed! Error: %s\n", strerror(errno));
         close(sfd);
         return EXIT_FAILURE;
     }
 
-    if ( listen(sfd, 10) ){
+    if ( listen(sfd, 10) < 0 ){
         fprintf(stderr, "listen() failed! Error: %s\n", strerror(errno));
         close(sfd);
         return EXIT_FAILURE;
@@ -99,18 +89,16 @@ int main ( void ){
     FD_ZERO(&wmask);
     fdmax = sfd;
 
-    timeout.tv_sec  = 3 * 60;
-    timeout.tv_usec = 0;
-
     for(;;){
     	FD_SET(sfd, &rmask);
     	wmask = mask;
     	
-    	rc = select(fdmax + 1, &rmask, &wmask, (fd_set *)0, &timeout);
+    	rc = select( fdmax + 1, &rmask, &wmask, NULL, NULL );
     	
-    	if ( ! rc ){
+    	if ( rc < 0 ){
     		fprintf(stderr, "Select() timed out\n");
-    		continue;
+    		close(sfd);
+			return EXIT_FAILURE;
     	}
     	
     	fda = rc;
@@ -145,9 +133,10 @@ int main ( void ){
     			
     			close(i);
     			FD_CLR(i, &mask);
-    			if ( i == fdmax )
-    				while ( fdmax > sfd && !FD_ISSET(fdmax, &mask) )
+    			if ( i == fdmax ){
+					while ( fdmax > sfd && !FD_ISSET(fdmax, &mask) )
     					fdmax -= 1;
+				}
 				printf("out1\n");
     		} else
     		if ( FD_ISSET(i, &rmask) ) {
@@ -164,9 +153,10 @@ int main ( void ){
                 printf("buff = %s\n", buff);
     			close(i);
     			FD_CLR(i, &mask);
-    			if ( i == fdmax )
-    				while ( fdmax > sfd && !FD_ISSET(fdmax, &mask) )
+    			if ( i == fdmax ){
+					while ( fdmax > sfd && !FD_ISSET(fdmax, &mask) )
     					fdmax -= 1;
+				}
 				printf("out2\n");
     		}
     	}

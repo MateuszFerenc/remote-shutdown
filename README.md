@@ -25,13 +25,13 @@ python3 src\client\client.py
 ```
 
 # TODO
-- [&check;] Podstawowa implementacja klienta
-- [&check;] Podstawowa implementacja serwera
-- [&check;] Przygotowanie Makefile
+- [x] Podstawowa implementacja klienta
+- [x] Podstawowa implementacja serwera
+- [x] Przygotowanie Makefile
 - [ ] Przygotowanie dokumentacji
 - [ ] Podstawowy protokół komunikacji
 - [ ] Zaimplementować wyłaczanie komputera przez aplikację serwera
-- [&check;] Przygotować wstępne GUI (Qt5)
+- [x] Przygotować wstępne GUI (Qt5)
 - [ ] pełne GUI klienta (Qt5)
 - [ ] funkcjonalne GUI klienta (Qt5)
-- [ ] automatyczna konwersja (w Makefile) z **.ui** do **.py** (Qt5)
+- [x] automatyczna konwersja (w Makefile) z **.ui** do **.py** (Qt5)
