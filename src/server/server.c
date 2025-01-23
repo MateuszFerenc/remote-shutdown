@@ -112,6 +112,9 @@ int main ( void ){
 
     FD_ZERO(&greeting_set);
     FD_ZERO(&hostname_set);
+    FD_ZERO(&test_set);
+    FD_ZERO(&kill_set);
+    FD_ZERO(&shutdown_set);
 
 	int alive = 1;
     while(alive){
@@ -119,9 +122,11 @@ int main ( void ){
 
         if ( epoll_ReadyFd == -1 ){
             fprintf(stderr, "epoll() failed! Error: %s\n", strerror(errno));
+            alive = 0;
             break;
         } else if( epoll_ReadyFd == 0 ){
             fprintf(stderr, "epoll() Timeout!\n");
+            alive = 0;
             break;
         }
 

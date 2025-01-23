@@ -238,7 +238,7 @@ def discover_servers(subnet: str = "127.0.0", port: str = "8080"):
             pass
 
     threads = []
-    for i in range(1, 2):
+    for i in range(1, 255):
         ip = f"{subnet}.{i}"
         thread = threading.Thread(target=discover, args=(ip,))
         thread.start()
