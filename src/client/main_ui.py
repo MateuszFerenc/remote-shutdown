@@ -344,7 +344,6 @@ class Ui_MainWindow(object):
         self.action_Exit_2 = QtWidgets.QAction(MainWindow)
         self.action_Exit_2.setObjectName("action_Exit_2")
         self.menu_File.addAction(self.action_Language)
-        self.menu_File.addAction(self.action_Exit)
         self.menu_File.addAction(self.action_Exit_2)
         self.menu_Help.addAction(self.action_Author)
         self.menu_Help.addAction(self.action_Documentation)

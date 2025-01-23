@@ -767,7 +767,6 @@ p, li { white-space: pre-wrap; }
      <string>&amp;File</string>
     </property>
     <addaction name="action_Language"/>
-    <addaction name="action_Exit"/>
     <addaction name="action_Exit_2"/>
    </widget>
    <widget class="QMenu" name="menu_Help">

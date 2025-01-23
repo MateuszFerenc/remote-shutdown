@@ -32,8 +32,8 @@ python3 src\client\client.py
 - [x] Podstawowy protokół komunikacji
 - [x] Pełen protokół komunikacji
 - [ ] Bezpieczny protokół komunikacji (OpenSSL)
-- [ ] Zaimplementować wyłaczanie komputera przez aplikację serwera
+- [x] Zaimplementować wyłaczanie komputera przez aplikację serwera
 - [x] Przygotować wstępne GUI (Qt5)
 - [x] pełne GUI klienta (Qt5)
-- [ ] funkcjonalne GUI klienta (Qt5)
+- [x] funkcjonalne GUI klienta (Qt5)
 - [x] automatyczna konwersja (w Makefile) z **.ui** do **.py** (Qt5)

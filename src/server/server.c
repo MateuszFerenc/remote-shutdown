@@ -55,7 +55,7 @@ int main ( void ){
     struct sockaddr_in server_addr_struct, client_addr_struct;
     socklen_t socket_length = sizeof(client_addr_struct);
     int serverFd, epollFd, epoll_ReadyFd, active_client, clientFd;
-    fd_set greeting_set, hostname_set, test_set, kill_set;
+    fd_set greeting_set, hostname_set, test_set, kill_set, shutdown_set;
 
     char buff[ REC_BUFF_SIZE ];
     int read_len;
@@ -159,6 +159,9 @@ int main ( void ){
 					if(strncmp("KILL", buff, 5) == 0)
 			    		FD_SET(current_event.data.fd, &kill_set);
 					else
+					if(strncmp("SHUTDOWN", buff, 8) == 0)
+			    		FD_SET(current_event.data.fd, &shutdown_set);
+					else
 					if(strncmp("TEST", buff, 8) == 0)
 			    		FD_SET(current_event.data.fd, &test_set);
 					else {
@@ -184,6 +187,17 @@ int main ( void ){
 				if ( FD_ISSET( current_event.data.fd, &test_set ) ){
     				write(current_event.data.fd, "OK", 2);
     				FD_CLR(current_event.data.fd, &test_set );
+    			} else 
+				if ( FD_ISSET( current_event.data.fd, &shutdown_set ) ){
+    				write(current_event.data.fd, "OK", 2);
+    				FD_CLR(current_event.data.fd, &shutdown_set );
+					if (__shutdown() == 0)
+						printf("Shutting down...");
+					else {
+						fprintf(stderr, "shutdown() failed! Error: %s\n", strerror(errno));
+						alive = 0;
+                    	break;
+					}
     			} else 
 				if ( FD_ISSET( current_event.data.fd, &kill_set ) ){
     				write(current_event.data.fd, "OK", 2);

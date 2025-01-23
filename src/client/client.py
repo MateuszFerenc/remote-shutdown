@@ -75,77 +75,35 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         if hosts_dict is None:
             return
         
-        def test_hosts(ip, port):
-            try:
-                with socket.create_connection((ip, port), timeout=1) as sock:
-                    sock.sendall(b"HI SERVER")
-                    response = sock.recv(64).decode()
-                    if response == "HI CLIENT":
-                        sock.sendall(b"TEST")
-                        response = sock.recv(64).decode()
-                        if response == "OK":
-                            hosts_dict[ip] = True
-                            sock.sendall(b"CLOSE")
-                            return
-
-            except Exception:
-                pass
-
-        threads = []
-        for ip in hosts_dict:
-            thread = threading.Thread(target=test_hosts, args=(ip, self.port))
-            thread.start()
-            threads.append(thread)
-
-        for thread in threads:
-            thread.join()
+        hosts_dict = simple_communication(hosts_ips=hosts_dict, port=self.port, command="TEST")
         
-        self.print_status("Test results:")
-        for ip, response in hosts_dict.items():
-            if response == True:
-                self.print_status(f"{ip}: OK")
-            else:
-                self.print_status(f"{ip}: DEAD")
+        self.ResultsSummary(summary=hosts_dict, type="Test", positive="Ok", negative="Dead")
 
     def disable_hosts(self):
         hosts_dict = self.get_hosts_selections()
         if hosts_dict is None:
             return
         
-        def disable_hosts(ip, port):
-            try:
-                with socket.create_connection((ip, port), timeout=1) as sock:
-                    sock.sendall(b"HI SERVER")
-                    response = sock.recv(64).decode()
-                    if response == "HI CLIENT":
-                        sock.sendall(b"KILL")
-                        response = sock.recv(64).decode()
-                        if response == "OK":
-                            hosts_dict[ip] = True
-                            sock.sendall(b"CLOSE")
-                            return
-
-            except Exception:
-                pass
-
-        threads = []
-        for ip in hosts_dict:
-            thread = threading.Thread(target=disable_hosts, args=(ip, self.port))
-            thread.start()
-            threads.append(thread)
-
-        for thread in threads:
-            thread.join()
+        hosts_dict = simple_communication(hosts_ips=hosts_dict, port=self.port, command="KILL")
         
-        self.print_status("Test results:")
-        for ip, response in hosts_dict.items():
-            if response == True:
-                self.print_status(f"{ip}: KILLED")
-            else:
-                self.print_status(f"{ip}: UNKNOWN")
+        self.ResultsSummary(summary=hosts_dict, type="Disable", positive="Killed", negative="Unknown")
 
     def shutdown_hosts(self):
-        pass
+        hosts_dict = self.get_hosts_selections()
+        if hosts_dict is None:
+            return
+        
+        hosts_dict = simple_communication(hosts_ips=hosts_dict, port=self.port, command="SHUTDOWN")
+        
+        self.ResultsSummary(summary=hosts_dict, type="Shutdown", positive="Ok", negative="Unknown")
+
+    def ResultsSummary(self, summary: dict, type: str, positive: str, negative: str):
+        self.print_status(f"{type} results:")
+        for ip, response in summary.items():
+            if response == True:
+                self.print_status(f"{ip}: {positive}")
+            else:
+                self.print_status(f"{ip}: {negative}")
 
     def checkBoxHandle(self, checkbox_instance: QtWidgets.QCheckBox):
         for checkbox in self.selectCheckBoxes:
@@ -232,8 +190,37 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         for server in self.hosts:
             self.ui.FoundHosts_list.addItem(f"{server[0]}: {server[1]}")
 
+def simple_communication(hosts_ips: dict, port: str, command: str, expected_response: str = "OK") -> dict:
+    hosts_dict = hosts_ips
 
-def discover_servers(subnet: str = "127.0.0", port: int = 8080):
+    def test_hosts(ip, port, command, expected_response):
+        try:
+            with socket.create_connection((ip, port), timeout=1) as sock:
+                sock.sendall(b"HI SERVER")
+                response = sock.recv(64).decode()
+                if response == "HI CLIENT":
+                    sock.sendall(str.encode(command))
+                    response = sock.recv(64).decode()
+                    if response == expected_response:
+                        hosts_dict[ip] = True
+                        sock.sendall(b"CLOSE")
+                        return
+
+        except Exception:
+            pass
+
+    threads = []
+    for ip in hosts_ips:
+        thread = threading.Thread(target=test_hosts, args=(ip, port, command, expected_response))
+        thread.start()
+        threads.append(thread)
+
+    for thread in threads:
+        thread.join()
+
+    return hosts_dict
+
+def discover_servers(subnet: str = "127.0.0", port: str = "8080"):
     found_servers = []
 
     def discover(ip):
