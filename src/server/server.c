@@ -1,4 +1,6 @@
-// #define _POSIX_SOURCE
+#define _POSIX_C_SOURCE 200112L
+#define _XOPEN_SOURCE 500U
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -51,7 +53,7 @@ void makenonblocking(int fd){
 }
 
 int main ( void ){
-    int server_fd, client_fd, fd_max, on = 1, fda, i;
+    int server_fd, client_fd, fd_max, fda, i;
     fd_set mask, rmask, wmask, author, hostname;
     struct sockaddr_in server_addr_struct, client_addr_struct;
 	socklen_t socket_length = sizeof(client_addr_struct);
@@ -139,10 +141,9 @@ int main ( void ){
     				FD_CLR(i, &author);
     			} else 
     			if ( FD_ISSET(i, &hostname) ){
-                    char hn[_SC_HOST_NAME_MAX+1];
-                    gethostname(hn, _SC_HOST_NAME_MAX+1);
-                    int len = sprintf(buff, "%s\n", hn);
-    				write(i, buff, len);
+                    char hn[HOST_NAME_MAX + 1];
+                    gethostname(hn, HOST_NAME_MAX + 1);
+    				write(i, hn, HOST_NAME_MAX);
     				FD_CLR(i, &hostname);
     			} else
     				write(i, "HI CLIENT", 9);

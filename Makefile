@@ -28,6 +28,7 @@ CFLAGS += -Wstrict-prototypes
 CFLAGS += -Wswitch-default
 CFLAGS += -Wswitch-enum
 CFLAGS += -Wunreachable-code
+# CFLAGS += -std=c17
 
 ifeq ($(DEBUG),1)
 COMPILATION_OUTPUT = 2>$(OUTPUT_DIR)/./"compilation_output_$(@F:.o=).txt"
@@ -38,9 +39,9 @@ endif
 
 all: 	build
 
-build: 	$(OUTPUT_DIR)/./$(TARGET).o
+build: 	$(OUTPUT_DIR)/./%.o
 
-$(OUTPUT_DIR)/./$(TARGET).o: 	$(DIR)/./$(SOURCE).c
+$(OUTPUT_DIR)/./%.o: 	$(DIR)/./%.c
 	$(CC) $(CFLAGS) $< -o $@ $(COMPILATION_OUTPUT)
 
 clean:
@@ -50,9 +51,9 @@ clean:
 run:	$(OUTPUT_DIR)/./$(TARGET).o
 	./$(OUTPUT_DIR)/./$(TARGET).o
 
-gen_ui:		$(UI_DIR)/./$(UI_FILES).py
+gen_ui:	$(UI_DIR)/./$(UI_FILES).py
 
-$(UI_DIR)/./$(UI_FILES).py: $(UI_DIR)/./$(UI_FILES).ui
+$(UI_DIR)/./%.py: 	$(UI_DIR)/./%.ui
 	$(PY) -m PyQt5.uic.pyuic -x $< -o $@
 
 .DEFAULTGOAL: all

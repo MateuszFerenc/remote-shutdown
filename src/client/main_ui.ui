@@ -6,20 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>760</width>
-    <height>550</height>
+    <width>770</width>
+    <height>540</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>760</width>
-    <height>550</height>
+    <width>770</width>
+    <height>540</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>760</width>
-    <height>550</height>
+    <width>770</width>
+    <height>540</height>
    </size>
   </property>
   <property name="font">
@@ -27,6 +27,9 @@
     <pointsize>11</pointsize>
     <stylestrategy>PreferAntialias</stylestrategy>
    </font>
+  </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::NoContextMenu</enum>
   </property>
   <property name="windowTitle">
    <string>Remote Shutdown Client</string>
@@ -44,79 +47,50 @@
    <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QRadioButton" name="radioButton">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <widget class="QRadioButton" name="getLocalAddr">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>40</y>
+      <y>54</y>
       <width>131</width>
       <height>17</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>SquareSlab711 Bd BT</family>
+      <family>Segoe UI Semibold</family>
       <pointsize>11</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
       <stylestrategy>PreferAntialias</stylestrategy>
      </font>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <property name="text">
      <string>Local network</string>
     </property>
-   </widget>
-   <widget class="QRadioButton" name="radioButton_2">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>60</y>
-      <width>91</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>SquareSlab711 Bd BT</family>
-      <pointsize>11</pointsize>
-      <stylestrategy>PreferAntialias</stylestrategy>
-     </font>
-    </property>
-    <property name="text">
-     <string>IP range</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>10</y>
-      <width>151</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>SquareSlab711 Bd BT</family>
-      <pointsize>17</pointsize>
-      <stylestrategy>PreferAntialias</stylestrategy>
-     </font>
-    </property>
-    <property name="text">
-     <string>Search method:</string>
+    <property name="checkable">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>110</y>
-      <width>91</width>
+      <y>128</y>
+      <width>111</width>
       <height>16</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>SquareSlab711 Bd BT</family>
-      <pointsize>13</pointsize>
+      <family>Segoe UI Black</family>
+      <pointsize>12</pointsize>
       <stylestrategy>PreferAntialias</stylestrategy>
      </font>
     </property>
@@ -128,15 +102,15 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>130</y>
-      <width>111</width>
+      <y>150</y>
+      <width>131</width>
       <height>16</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>SquareSlab711 Bd BT</family>
-      <pointsize>13</pointsize>
+      <family>Segoe UI Black</family>
+      <pointsize>12</pointsize>
       <stylestrategy>PreferAntialias</stylestrategy>
      </font>
     </property>
@@ -144,19 +118,19 @@
      <string>Selected hosts:</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_4">
+   <widget class="QLabel" name="FoundHosts_label">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>110</y>
+      <x>140</x>
+      <y>128</y>
       <width>61</width>
       <height>16</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>SquareSlab711 Bd BT</family>
-      <pointsize>13</pointsize>
+      <family>Segoe UI Semibold</family>
+      <pointsize>12</pointsize>
       <stylestrategy>PreferAntialias</stylestrategy>
      </font>
     </property>
@@ -164,19 +138,19 @@
      <string>hosts</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_5">
+   <widget class="QLabel" name="SelectedHosts_label">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>130</y>
+      <x>160</x>
+      <y>150</y>
       <width>61</width>
       <height>16</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>SquareSlab711 Bd BT</family>
-      <pointsize>13</pointsize>
+      <family>Segoe UI Semibold</family>
+      <pointsize>12</pointsize>
       <stylestrategy>PreferAntialias</stylestrategy>
      </font>
     </property>
@@ -190,7 +164,7 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>230</x>
+      <x>240</x>
       <y>5</y>
       <width>231</width>
       <height>31</height>
@@ -204,8 +178,8 @@
     </property>
     <property name="font">
      <font>
-      <family>SquareSlab711 Bd BT</family>
-      <pointsize>24</pointsize>
+      <family>Segoe UI Black</family>
+      <pointsize>20</pointsize>
       <weight>75</weight>
       <bold>true</bold>
       <stylestrategy>PreferAntialias</stylestrategy>
@@ -225,19 +199,19 @@
      <number>-1</number>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="SearchButton">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>80</y>
-      <width>151</width>
+      <x>19</x>
+      <y>100</y>
+      <width>153</width>
       <height>23</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>SquareSlab711 Bd BT</family>
-      <pointsize>13</pointsize>
+      <family>Segoe UI Semibold</family>
+      <pointsize>11</pointsize>
       <stylestrategy>PreferAntialias</stylestrategy>
      </font>
     </property>
@@ -248,15 +222,15 @@
    <widget class="QProgressBar" name="progressBar">
     <property name="geometry">
      <rect>
-      <x>230</x>
-      <y>470</y>
+      <x>240</x>
+      <y>477</y>
       <width>511</width>
       <height>23</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>SquareSlab711 Bd BT</family>
+      <family>Segoe UI Semibold</family>
       <pointsize>12</pointsize>
       <stylestrategy>PreferAntialias</stylestrategy>
      </font>
@@ -265,10 +239,10 @@
      <number>24</number>
     </property>
    </widget>
-   <widget class="QListWidget" name="listWidget">
+   <widget class="QListWidget" name="FoundHosts_list">
     <property name="geometry">
      <rect>
-      <x>230</x>
+      <x>240</x>
       <y>40</y>
       <width>511</width>
       <height>371</height>
@@ -281,19 +255,31 @@
       <stylestrategy>PreferAntialias</stylestrategy>
      </font>
     </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
+    </property>
+    <property name="defaultDropAction">
+     <enum>Qt::IgnoreAction</enum>
+    </property>
+    <property name="alternatingRowColors">
+     <bool>true</bool>
+    </property>
+    <property name="selectionBehavior">
+     <enum>QAbstractItemView::SelectItems</enum>
+    </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="TestHosts_button">
     <property name="geometry">
      <rect>
-      <x>230</x>
-      <y>430</y>
+      <x>240</x>
+      <y>435</y>
       <width>161</width>
       <height>23</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>SquareSlab711 Bd BT</family>
+      <family>Segoe UI Semibold</family>
       <pointsize>13</pointsize>
       <stylestrategy>PreferAntialias</stylestrategy>
      </font>
@@ -302,18 +288,18 @@
      <string>Test</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QPushButton" name="DisableHosts_button">
     <property name="geometry">
      <rect>
-      <x>400</x>
-      <y>430</y>
+      <x>410</x>
+      <y>435</y>
       <width>161</width>
       <height>23</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>SquareSlab711 Bd BT</family>
+      <family>Segoe UI Semibold</family>
       <pointsize>13</pointsize>
       <stylestrategy>PreferAntialias</stylestrategy>
      </font>
@@ -322,18 +308,18 @@
      <string>Disable</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_4">
+   <widget class="QPushButton" name="ShutdownHosts_button">
     <property name="geometry">
      <rect>
-      <x>570</x>
-      <y>430</y>
+      <x>580</x>
+      <y>435</y>
       <width>171</width>
       <height>23</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>SquareSlab711 Bd BT</family>
+      <family>Segoe UI Semibold</family>
       <pointsize>13</pointsize>
       <stylestrategy>PreferAntialias</stylestrategy>
       <kerning>true</kerning>
@@ -347,15 +333,15 @@
     <property name="geometry">
      <rect>
       <x>130</x>
-      <y>460</y>
+      <y>467</y>
       <width>91</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>SquareSlab711 Bd BT</family>
-      <pointsize>17</pointsize>
+      <family>Segoe UI Black</family>
+      <pointsize>14</pointsize>
       <stylestrategy>PreferAntialias</stylestrategy>
      </font>
     </property>
@@ -363,31 +349,11 @@
      <string>Progress:</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_8">
+   <widget class="QTextEdit" name="StatusInfoBox">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>280</y>
-      <width>111</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>SquareSlab711 Bd BT</family>
-      <pointsize>13</pointsize>
-      <stylestrategy>PreferAntialias</stylestrategy>
-     </font>
-    </property>
-    <property name="text">
-     <string>Info:</string>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="textEdit">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>300</y>
+      <y>314</y>
       <width>191</width>
       <height>151</height>
      </rect>
@@ -399,39 +365,38 @@
       <stylestrategy>PreferAntialias</stylestrategy>
      </font>
     </property>
+    <property name="undoRedoEnabled">
+     <bool>false</bool>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Consolas'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="overwriteMode">
+     <bool>true</bool>
+    </property>
+    <property name="textInteractionFlags">
+     <set>Qt::TextBrowserInteraction</set>
+    </property>
    </widget>
-   <widget class="QLabel" name="label_9">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>150</y>
-      <width>151</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>SquareSlab711 Bd BT</family>
-      <pointsize>17</pointsize>
-      <stylestrategy>PreferAntialias</stylestrategy>
-     </font>
-    </property>
-    <property name="text">
-     <string>Select method:</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_5">
+   <widget class="QPushButton" name="SelectAll_button">
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>180</y>
+      <y>200</y>
       <width>81</width>
       <height>23</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>SquareSlab711 Bd BT</family>
+      <family>Segoe UI Semibold</family>
       <pointsize>13</pointsize>
       <stylestrategy>PreferAntialias</stylestrategy>
      </font>
@@ -440,18 +405,18 @@
      <string>Select all</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_6">
+   <widget class="QPushButton" name="UnselectAll_button">
     <property name="geometry">
      <rect>
       <x>125</x>
-      <y>180</y>
+      <y>200</y>
       <width>101</width>
       <height>23</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>SquareSlab711 Bd BT</family>
+      <family>Segoe UI Semibold</family>
       <pointsize>13</pointsize>
       <stylestrategy>PreferAntialias</stylestrategy>
      </font>
@@ -460,11 +425,11 @@
      <string>Unselect all</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox">
+   <widget class="QCheckBox" name="SelectAllActive_checkBox">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>180</y>
+      <y>200</y>
       <width>16</width>
       <height>21</height>
      </rect>
@@ -472,19 +437,22 @@
     <property name="text">
      <string/>
     </property>
+    <property name="checkable">
+     <bool>false</bool>
+    </property>
    </widget>
    <widget class="QPushButton" name="pushButton_7">
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>210</y>
-      <width>105</width>
+      <y>230</y>
+      <width>109</width>
       <height>23</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>SquareSlab711 Bd BT</family>
+      <family>Segoe UI Semibold</family>
       <pointsize>13</pointsize>
       <stylestrategy>PreferAntialias</stylestrategy>
      </font>
@@ -493,31 +461,34 @@
      <string>Select range</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_2">
+   <widget class="QCheckBox" name="SelectRange_checkBox">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>210</y>
+      <y>230</y>
       <width>16</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
      <string>Select range</string>
+    </property>
+    <property name="checkable">
+     <bool>false</bool>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_8">
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>240</y>
+      <y>260</y>
       <width>91</width>
       <height>23</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>SquareSlab711 Bd BT</family>
+      <family>Segoe UI Semibold</family>
       <pointsize>13</pointsize>
       <stylestrategy>PreferAntialias</stylestrategy>
      </font>
@@ -526,11 +497,11 @@
      <string>Select one</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_3">
+   <widget class="QCheckBox" name="SelectOne_checkBox">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>240</y>
+      <y>260</y>
       <width>16</width>
       <height>21</height>
      </rect>
@@ -538,22 +509,193 @@
     <property name="text">
      <string>Select one</string>
     </property>
+    <property name="checkable">
+     <bool>false</bool>
+    </property>
    </widget>
+   <widget class="QLineEdit" name="AddrEdit">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>77</y>
+      <width>151</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Segoe UI</family>
+      <pointsize>11</pointsize>
+      <weight>50</weight>
+      <italic>true</italic>
+      <bold>false</bold>
+      <strikeout>false</strikeout>
+      <stylestrategy>PreferAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="acceptDrops">
+     <bool>false</bool>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="inputMethodHints">
+     <set>Qt::ImhNoAutoUppercase|Qt::ImhNoPredictiveText|Qt::ImhPreferNumbers</set>
+    </property>
+    <property name="text">
+     <string>255.255.255.255</string>
+    </property>
+    <property name="maxLength">
+     <number>15</number>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="clearButtonEnabled">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>415</y>
+      <width>531</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Segoe UI Semibold</family>
+      <pointsize>11</pointsize>
+      <stylestrategy>PreferAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="title">
+     <string>Actions</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+    <property name="checkable">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>290</y>
+      <width>211</width>
+      <height>181</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Segoe UI Semibold</family>
+      <pointsize>11</pointsize>
+      <stylestrategy>PreferAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="title">
+     <string>Status</string>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_3">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>180</y>
+      <width>221</width>
+      <height>111</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Segoe UI Semibold</family>
+      <pointsize>11</pointsize>
+      <stylestrategy>PreferAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="title">
+     <string>Select method</string>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_4">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>221</width>
+      <height>151</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Segoe UI Semibold</family>
+      <pointsize>11</pointsize>
+      <stylestrategy>PreferAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="title">
+     <string>Select method</string>
+    </property>
+   </widget>
+   <zorder>groupBox_4</zorder>
+   <zorder>groupBox_3</zorder>
+   <zorder>groupBox_2</zorder>
+   <zorder>groupBox</zorder>
+   <zorder>getLocalAddr</zorder>
+   <zorder>label_2</zorder>
+   <zorder>label_3</zorder>
+   <zorder>FoundHosts_label</zorder>
+   <zorder>SelectedHosts_label</zorder>
+   <zorder>label_6</zorder>
+   <zorder>SearchButton</zorder>
+   <zorder>progressBar</zorder>
+   <zorder>FoundHosts_list</zorder>
+   <zorder>TestHosts_button</zorder>
+   <zorder>DisableHosts_button</zorder>
+   <zorder>ShutdownHosts_button</zorder>
+   <zorder>label_7</zorder>
+   <zorder>StatusInfoBox</zorder>
+   <zorder>SelectAll_button</zorder>
+   <zorder>UnselectAll_button</zorder>
+   <zorder>SelectAllActive_checkBox</zorder>
+   <zorder>pushButton_7</zorder>
+   <zorder>SelectRange_checkBox</zorder>
+   <zorder>pushButton_8</zorder>
+   <zorder>SelectOne_checkBox</zorder>
+   <zorder>AddrEdit</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>760</width>
+     <width>770</width>
      <height>26</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI Semibold</family>
+     <pointsize>11</pointsize>
+     <stylestrategy>PreferAntialias</stylestrategy>
+    </font>
    </property>
    <widget class="QMenu" name="menu_File">
     <property name="title">
      <string>&amp;File</string>
     </property>
     <addaction name="action_Language"/>
+    <addaction name="action_Exit"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -565,7 +707,6 @@
    <addaction name="menu_File"/>
    <addaction name="menu_Help"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <action name="action_Language">
    <property name="text">
     <string>&amp;Language</string>
@@ -581,7 +722,29 @@
     <string>&amp;Documentation</string>
    </property>
   </action>
+  <action name="action_Exit">
+   <property name="text">
+    <string>&amp;Exit</string>
+   </property>
+  </action>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>getLocalAddr</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>getLocalAddr</receiver>
+   <slot>toggle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>117</x>
+     <y>68</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>70</x>
+     <y>72</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
