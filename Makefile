@@ -1,6 +1,3 @@
-# TARGET = client
-# SOURCE = client
-
 TARGET = server
 SOURCE = server
 
@@ -39,7 +36,7 @@ endif
 
 all: 	build
 
-build: 	$(OUTPUT_DIR)/./%.o
+build: 	$(OUTPUT_DIR)/./$(TARGET).o
 
 $(OUTPUT_DIR)/./%.o: 	$(DIR)/./%.c
 	$(CC) $(CFLAGS) $< -o $@ $(COMPILATION_OUTPUT)

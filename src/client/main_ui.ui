@@ -204,7 +204,7 @@
      <rect>
       <x>19</x>
       <y>100</y>
-      <width>153</width>
+      <width>203</width>
       <height>23</height>
      </rect>
     </property>
@@ -426,6 +426,9 @@ p, li { white-space: pre-wrap; }
     </property>
    </widget>
    <widget class="QCheckBox" name="SelectAllActive_checkBox">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -440,8 +443,14 @@ p, li { white-space: pre-wrap; }
     <property name="checkable">
      <bool>false</bool>
     </property>
+    <property name="autoRepeat">
+     <bool>false</bool>
+    </property>
+    <property name="autoExclusive">
+     <bool>false</bool>
+    </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_7">
+   <widget class="QPushButton" name="SelectRange_button">
     <property name="geometry">
      <rect>
       <x>40</x>
@@ -462,6 +471,9 @@ p, li { white-space: pre-wrap; }
     </property>
    </widget>
    <widget class="QCheckBox" name="SelectRange_checkBox">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -477,7 +489,7 @@ p, li { white-space: pre-wrap; }
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_8">
+   <widget class="QPushButton" name="SelectOne_button">
     <property name="geometry">
      <rect>
       <x>40</x>
@@ -498,6 +510,9 @@ p, li { white-space: pre-wrap; }
     </property>
    </widget>
    <widget class="QCheckBox" name="SelectOne_checkBox">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -518,7 +533,7 @@ p, li { white-space: pre-wrap; }
      <rect>
       <x>20</x>
       <y>77</y>
-      <width>151</width>
+      <width>115</width>
       <height>20</height>
      </rect>
     </property>
@@ -543,16 +558,22 @@ p, li { white-space: pre-wrap; }
      <bool>false</bool>
     </property>
     <property name="inputMethodHints">
-     <set>Qt::ImhNoAutoUppercase|Qt::ImhNoPredictiveText|Qt::ImhPreferNumbers</set>
+     <set>Qt::ImhPreferNumbers</set>
     </property>
     <property name="text">
-     <string>255.255.255.255</string>
+     <string>255.255.255</string>
     </property>
     <property name="maxLength">
-     <number>15</number>
+     <number>12</number>
+    </property>
+    <property name="frame">
+     <bool>true</bool>
+    </property>
+    <property name="echoMode">
+     <enum>QLineEdit::Normal</enum>
     </property>
     <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
     <property name="clearButtonEnabled">
      <bool>true</bool>
@@ -646,6 +667,57 @@ p, li { white-space: pre-wrap; }
     <property name="title">
      <string>Select method</string>
     </property>
+    <widget class="QLineEdit" name="PortEdit">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>47</y>
+       <width>81</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>11</pointsize>
+       <weight>50</weight>
+       <italic>true</italic>
+       <bold>false</bold>
+       <strikeout>false</strikeout>
+       <stylestrategy>PreferAntialias</stylestrategy>
+      </font>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="inputMethodHints">
+      <set>Qt::ImhDigitsOnly</set>
+     </property>
+     <property name="text">
+      <string>8080</string>
+     </property>
+     <property name="maxLength">
+      <number>5</number>
+     </property>
+     <property name="frame">
+      <bool>true</bool>
+     </property>
+     <property name="echoMode">
+      <enum>QLineEdit::Normal</enum>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="clearButtonEnabled">
+      <bool>true</bool>
+     </property>
+    </widget>
    </widget>
    <zorder>groupBox_4</zorder>
    <zorder>groupBox_3</zorder>
@@ -668,9 +740,9 @@ p, li { white-space: pre-wrap; }
    <zorder>SelectAll_button</zorder>
    <zorder>UnselectAll_button</zorder>
    <zorder>SelectAllActive_checkBox</zorder>
-   <zorder>pushButton_7</zorder>
+   <zorder>SelectRange_button</zorder>
    <zorder>SelectRange_checkBox</zorder>
-   <zorder>pushButton_8</zorder>
+   <zorder>SelectOne_button</zorder>
    <zorder>SelectOne_checkBox</zorder>
    <zorder>AddrEdit</zorder>
   </widget>
@@ -696,6 +768,7 @@ p, li { white-space: pre-wrap; }
     </property>
     <addaction name="action_Language"/>
     <addaction name="action_Exit"/>
+    <addaction name="action_Exit_2"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -723,6 +796,11 @@ p, li { white-space: pre-wrap; }
    </property>
   </action>
   <action name="action_Exit">
+   <property name="text">
+    <string>&amp;Select port</string>
+   </property>
+  </action>
+  <action name="action_Exit_2">
    <property name="text">
     <string>&amp;Exit</string>
    </property>
