@@ -1,3 +1,4 @@
+// #define _POSIX_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,6 +18,7 @@
 #include <unistd.h>
 #include <linux/reboot.h>
 #include <sys/reboot.h>
+
 
 int __shutdown( void ) {
     sync();
@@ -145,7 +147,7 @@ int main ( void ){
     			} else
     				write(i, "HI CLIENT", 9);
     			
-    			close(i);
+    			//close(i);
     			FD_CLR(i, &mask);
     			if ( i == fd_max ){
 					while ( fd_max > server_fd && !FD_ISSET(fd_max, &mask) )
@@ -157,16 +159,22 @@ int main ( void ){
 
 				memset(buff, 0, REC_BUFF_SIZE);
     			read_len = __read( i, buff, REC_BUFF_SIZE );
-
+				printf("%s", buff);
                 if(read_len){
                 	if(strncmp("HI SERVER", buff, 9) == 0)
 			        	FD_SET(i, &author);
                     else 
 			    	if(strncmp("hostname", buff, 8) == 0)
 			    		FD_SET(i, &hostname);
+					else
+					if(strncmp("CLOSE", buff, 8) == 0){
+						close(i);
+						FD_CLR(i, &mask);
+					}
                 }
-    			close(i);
-    			FD_CLR(i, &mask);
+    			// TODO when we need to close connection with client
+				//close(i);
+				FD_CLR(i, &mask);
     			if ( i == fd_max ){
 					while ( fd_max > server_fd && !FD_ISSET(fd_max, &mask) )
     					fd_max -= 1;

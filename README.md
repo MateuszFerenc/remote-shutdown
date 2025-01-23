@@ -29,7 +29,9 @@ python3 src\client\client.py
 - [x] Podstawowa implementacja serwera
 - [x] Przygotowanie Makefile
 - [ ] Przygotowanie dokumentacji
-- [ ] Podstawowy protokół komunikacji
+- [x] Podstawowy protokół komunikacji
+- [ ] Pełen protokół komunikacji
+- [ ] Bezpieczny protokół komunikacji (OpenSSL)
 - [ ] Zaimplementować wyłaczanie komputera przez aplikację serwera
 - [x] Przygotować wstępne GUI (Qt5)
 - [ ] pełne GUI klienta (Qt5)

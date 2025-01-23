@@ -13,9 +13,15 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.ui.pushButton.clicked.connect(self.get_servers)
+
+    def get_servers(self):
+        serv = discover_servers()
+        self.ui.label_4.setText(str(len(serv)))
 
 
 def discover_servers():
+    print("Discovery start...")
     found_servers = []
     # subnet = "192.168.1."
     subnet = "127.0.0."
@@ -31,7 +37,7 @@ def discover_servers():
             pass
 
     threads = []
-    for i in range(1, 5):
+    for i in range(1, 2): # change to 255 after release
         ip = f"{subnet}{i}"
         thread = threading.Thread(target=discover, args=(ip,))
         thread.start()
@@ -40,20 +46,19 @@ def discover_servers():
     for thread in threads:
         thread.join()
 
-    return found_servers
-
-
-if __name__ == "__main__": 
-    print("Discovery start...")
-    found_servers = discover_servers()
-
     if ( len( found_servers ) ):
         print(f"Found {len( found_servers )} servers:")
         for server in found_servers:
             print(f"- {server}")
 
-    # app = QtWidgets.QApplication(sys.argv)
-    # application = ApplicationWindow()
-    # application.show()
-    # sys.exit(app.exec_())
+    return found_servers
+
+
+if __name__ == "__main__": 
+    found_servers = []
+    if ( True ):
+        app = QtWidgets.QApplication(sys.argv)
+        application = ApplicationWindow()
+        application.show()
+        sys.exit(app.exec_())
 
