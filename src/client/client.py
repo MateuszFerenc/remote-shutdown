@@ -28,6 +28,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.ui.progressBar.setValue(0)
 
         self.hosts = []
+        self.port = ""
         self.selected_hosts = []
         self.selectCheckBoxes = (self.ui.SelectOne_checkBox, self.ui.SelectRange_checkBox, self.ui.SelectAllActive_checkBox)
 
@@ -52,11 +53,96 @@ class ApplicationWindow(QtWidgets.QMainWindow):
     #         return True
     #     return super().eventFilter(widget, event)
 
+    def get_hosts_selections(self) -> (None | dict):
+        if len(self.hosts) == 0:
+            self.print_status("Search for hosts first!")
+            return None
+        
+        selected_hosts = self.ui.FoundHosts_list.selectedItems()
+        hosts_dict = {}
+        if selected_hosts:
+            for sel in selected_hosts:
+                sel = sel.text().split()
+                hosts_dict[sel[0][0:-1]] = False
+        else:
+            self.print_status("Nothing selected!")
+            return None
+        
+        return hosts_dict
+
     def test_hosts(self):
-        pass
+        hosts_dict = self.get_hosts_selections()
+        if hosts_dict is None:
+            return
+        
+        def test_hosts(ip, port):
+            try:
+                with socket.create_connection((ip, port), timeout=1) as sock:
+                    sock.sendall(b"HI SERVER")
+                    response = sock.recv(64).decode()
+                    if response == "HI CLIENT":
+                        sock.sendall(b"TEST")
+                        response = sock.recv(64).decode()
+                        if response == "OK":
+                            hosts_dict[ip] = True
+                            sock.sendall(b"CLOSE")
+                            return
+
+            except Exception:
+                pass
+
+        threads = []
+        for ip in hosts_dict:
+            thread = threading.Thread(target=test_hosts, args=(ip, self.port))
+            thread.start()
+            threads.append(thread)
+
+        for thread in threads:
+            thread.join()
+        
+        self.print_status("Test results:")
+        for ip, response in hosts_dict.items():
+            if response == True:
+                self.print_status(f"{ip}: OK")
+            else:
+                self.print_status(f"{ip}: DEAD")
 
     def disable_hosts(self):
-        pass
+        hosts_dict = self.get_hosts_selections()
+        if hosts_dict is None:
+            return
+        
+        def disable_hosts(ip, port):
+            try:
+                with socket.create_connection((ip, port), timeout=1) as sock:
+                    sock.sendall(b"HI SERVER")
+                    response = sock.recv(64).decode()
+                    if response == "HI CLIENT":
+                        sock.sendall(b"KILL")
+                        response = sock.recv(64).decode()
+                        if response == "OK":
+                            hosts_dict[ip] = True
+                            sock.sendall(b"CLOSE")
+                            return
+
+            except Exception:
+                pass
+
+        threads = []
+        for ip in hosts_dict:
+            thread = threading.Thread(target=disable_hosts, args=(ip, self.port))
+            thread.start()
+            threads.append(thread)
+
+        for thread in threads:
+            thread.join()
+        
+        self.print_status("Test results:")
+        for ip, response in hosts_dict.items():
+            if response == True:
+                self.print_status(f"{ip}: KILLED")
+            else:
+                self.print_status(f"{ip}: UNKNOWN")
 
     def shutdown_hosts(self):
         pass
@@ -100,20 +186,20 @@ class ApplicationWindow(QtWidgets.QMainWindow):
             self.print_status(f"{subnet} is incorrect subnet!")
             return
         
-        port = self.ui.PortEdit.text()
+        self.port = self.ui.PortEdit.text()
 
-        if port == "" or int(port) > 65535 :
+        if self.port == "" or int(self.port) > 65535 :
             AddrEditPalette.setColor(QPalette.Base, QColor("red"))
             self.ui.PortEdit.setPalette(AddrEditPalette)
-            self.print_status(f"{port} is incorrect value!")
+            self.print_status(f"{self.port} is incorrect value!")
             return
 
         AddrEditPalette.setColor(QPalette.Base, QColor("white"))
         self.ui.AddrEdit.setPalette(AddrEditPalette)
         self.ui.PortEdit.setPalette(AddrEditPalette)
 
-        self.print_status(f"Discovering {subnet}:{port} subnet...")
-        self.hosts = discover_servers(subnet, port)
+        self.print_status(f"Discovering {subnet}:{self.port} subnet...")
+        self.hosts = discover_servers(subnet, self.port)
         self.print_status(f"Found {len(self.hosts)} hosts.")
 
         self.ui.FoundHosts_label.setText(str(len(self.hosts)))
@@ -139,6 +225,8 @@ class ApplicationWindow(QtWidgets.QMainWindow):
     def print_status(self, status_text: str):
         if len(status_text):
             self.ui.StatusInfoBox.append(status_text)
+            self.ui.StatusInfoBox.moveCursor(self.ui.StatusInfoBox.textCursor().End)
+            self.ui.StatusInfoBox.ensureCursorVisible()
 
     def append_hosts(self):
         for server in self.hosts:

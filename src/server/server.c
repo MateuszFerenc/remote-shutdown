@@ -113,7 +113,8 @@ int main ( void ){
     FD_ZERO(&greeting_set);
     FD_ZERO(&hostname_set);
 
-    while(1){
+	int alive = 1;
+    while(alive){
         epoll_ReadyFd = epoll_wait( epollFd, events, MAX_EPOLL_EVENTS, -1);
 
         if ( epoll_ReadyFd == -1 ){
@@ -132,6 +133,7 @@ int main ( void ){
 
                 if ( clientFd == -1 ){
                     fprintf(stderr, "accept() failed! Error: %s\n", strerror(errno));
+					alive = 0;
                     break;
                 }
 
@@ -185,6 +187,7 @@ int main ( void ){
     			} else 
 				if ( FD_ISSET( current_event.data.fd, &kill_set ) ){
     				write(current_event.data.fd, "OK", 2);
+					alive = 0;
     				break;
     			} else 
     			if ( FD_ISSET( current_event.data.fd, &hostname_set ) ){
