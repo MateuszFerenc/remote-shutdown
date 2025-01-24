@@ -1,13 +1,24 @@
-from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtGui import QPalette, QColor
+from PyQt5 import QtWidgets
+from PyQt5.QtGui import QPalette, QColor, QPixmap
 from main_ui import Ui_MainWindow
+from author_ui import Ui_AuthorPopup
+from os import path
 import socket
 import sys
 import threading
 import re
-# import requests
 
-host = "localhost"
+file_path = path.dirname(path.abspath(sys.argv[0]))
+
+class AuthorPopup(QtWidgets.QMainWindow):
+    def __init__(self):
+        super(AuthorPopup, self).__init__()
+
+        self.ui = Ui_AuthorPopup()
+        self.ui.setupUi(self)
+        self.setWindowTitle("Author Info")
+        self.ui.AuthorImage.setPixmap(QPixmap(path.join(file_path, "author_image.png")))
+
 
 class ApplicationWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -15,6 +26,10 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+
+        self.AuthorPopup = AuthorPopup()
+
+        # setup clicked Event methods
         self.ui.SearchButton.clicked.connect(self.get_servers)
         self.ui.getLocalAddr.clicked.connect(self.get_local_addr)
         self.ui.TestHosts_button.clicked.connect(self.test_hosts)
@@ -24,14 +39,18 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.ui.UnselectAll_button.clicked.connect(self.unselectAllHosts)
         self.ui.SelectRange_button.clicked.connect(self.selectRange)
         self.ui.SelectOne_button.clicked.connect(self.selectOne)
-        self.ui.FoundHosts_list.setSelectionMode(QtWidgets.QAbstractItemView.NoSelection)
-        self.ui.FoundHosts_list.itemSelectionChanged.connect(self.update_selections_count)
         self.ui.ClearStatus.clicked.connect(self.clear_status)
+        self.ui.action_Author.triggered.connect(lambda: self.AuthorPopup.show())
+        self.ui.action_Exit_2.triggered.connect(lambda: self.close())
+
+        # setup selection changed Event methods
+        self.ui.FoundHosts_list.itemSelectionChanged.connect(lambda: self.ui.SelectedHosts_label.setText(str(len(self.ui.FoundHosts_list.selectedIndexes()))))
+
+        self.ui.FoundHosts_list.setSelectionMode(QtWidgets.QAbstractItemView.NoSelection)        
 
         self.hosts = []
         self.port = ""
         self.selected_hosts = []
-        self.selectCheckBoxes = (self.ui.SelectOne_checkBox, self.ui.SelectRange_checkBox, self.ui.SelectAllActive_checkBox)
 
         self.ui.StatusIndicator.setStyleSheet("""
                 QCheckBox::indicator {
@@ -39,7 +58,10 @@ class ApplicationWindow(QtWidgets.QMainWindow):
                     border: 1px solid darkgrey;
                 }
             """)
+        
+        self.selectCheckBoxes = (self.ui.SelectOne_checkBox, self.ui.SelectRange_checkBox, self.ui.SelectAllActive_checkBox)
 
+        # setup selection status checkboxes
         for cb in self.selectCheckBoxes:
             cb.setStyleSheet("""
                 QCheckBox::indicator {
@@ -54,9 +76,6 @@ class ApplicationWindow(QtWidgets.QMainWindow):
     def clear_status(self):
         self.ui.ClearStatus.setChecked(False)
         self.ui.StatusInfoBox.clear()
-
-    def update_selections_count(self):
-        self.ui.SelectedHosts_label.setText(str(len(self.ui.FoundHosts_list.selectedIndexes())))
 
     def get_hosts_selections(self) -> (None | dict):
         if len(self.hosts) == 0:
@@ -261,15 +280,15 @@ def discover_servers(subnet: str = "127.0.0", port: str = "8080"):
 
 if __name__ == "__main__": 
     found_servers = []
-    if ( True ):
-        app = QtWidgets.QApplication(sys.argv)
 
-        if "breeze" not in QtWidgets.QStyleFactory.keys():
-            app.setStyle("windowsvista")
-        else:
-            app.setStyle("breeze")
-            
-        application = ApplicationWindow()
-        application.show()
-        sys.exit(app.exec_())
+    app = QtWidgets.QApplication(sys.argv)
+
+    if "breeze" not in QtWidgets.QStyleFactory.keys():
+        app.setStyle("windowsvista")
+    else:
+        app.setStyle("breeze")
+        
+    application = ApplicationWindow()
+    application.show()
+    sys.exit(app.exec_())
 

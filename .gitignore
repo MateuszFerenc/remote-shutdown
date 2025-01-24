@@ -4,3 +4,4 @@
 **/__pycache__
 **/.vscode
 **/compilation_output*.txt
+**/*.pem

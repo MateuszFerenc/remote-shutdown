@@ -5,7 +5,8 @@ DIR = ./src/server
 OUTPUT_DIR = $(DIR)
 
 UI_DIR = ./src/client
-UI_FILES = main_ui
+UI_FILES = $(wildcard $(UI_DIR)/*.ui)
+UI2PY_FILES = $(UI_FILES:.ui=.py)
 
 CC = gcc
 DEL = rm
@@ -27,6 +28,8 @@ CFLAGS += -Wswitch-enum
 CFLAGS += -Wunreachable-code
 # CFLAGS += -std=c17
 
+LDFLAGS += -lssl -lcrypto
+
 ifeq ($(DEBUG),1)
 COMPILATION_OUTPUT = 2>$(OUTPUT_DIR)/./"compilation_output_$(@F:.o=).txt"
 else
@@ -39,7 +42,7 @@ all: 	build
 build: 	$(OUTPUT_DIR)/./$(TARGET).o
 
 $(OUTPUT_DIR)/./%.o: 	$(DIR)/./%.c
-	$(CC) $(CFLAGS) $< -o $@ $(COMPILATION_OUTPUT)
+	$(CC) $(CFLAGS) $< $(LDFLAGS) -o $@ $(COMPILATION_OUTPUT)
 
 clean:
 	-$(DEL) "$(OUTPUT_DIR)/$(TARGET).o"
@@ -48,9 +51,9 @@ clean:
 run:	$(OUTPUT_DIR)/./$(TARGET).o
 	./$(OUTPUT_DIR)/./$(TARGET).o
 
-gen_ui:	$(UI_DIR)/./$(UI_FILES).py
+gen_ui:	$(UI2PY_FILES)
 
-$(UI_DIR)/./%.py: 	$(UI_DIR)/./%.ui
+%.py: %.ui
 	$(PY) -m PyQt5.uic.pyuic -x $< -o $@
 
 .DEFAULTGOAL: all
