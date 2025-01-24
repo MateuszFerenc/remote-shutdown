@@ -24,38 +24,43 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.ui.UnselectAll_button.clicked.connect(self.unselectAllHosts)
         self.ui.SelectRange_button.clicked.connect(self.selectRange)
         self.ui.SelectOne_button.clicked.connect(self.selectOne)
-        # self.ui.AddrEdit.installEventFilter(self)
-        self.ui.progressBar.setValue(0)
+        self.ui.FoundHosts_list.setSelectionMode(QtWidgets.QAbstractItemView.NoSelection)
+        self.ui.FoundHosts_list.itemSelectionChanged.connect(self.update_selections_count)
+        self.ui.ClearStatus.clicked.connect(self.clear_status)
 
         self.hosts = []
         self.port = ""
         self.selected_hosts = []
         self.selectCheckBoxes = (self.ui.SelectOne_checkBox, self.ui.SelectRange_checkBox, self.ui.SelectAllActive_checkBox)
 
+        self.ui.StatusIndicator.setStyleSheet("""
+                QCheckBox::indicator {
+                    background-color: lightgrey;
+                    border: 1px solid darkgrey;
+                }
+            """)
+
         for cb in self.selectCheckBoxes:
             cb.setStyleSheet("""
                 QCheckBox::indicator {
                     background-color: lightgrey;
-                    border: 2px solid darkgrey;
+                    border: 1px solid darkgrey;
                 }
                 QCheckBox::indicator:checked {
-                    background-color: green;
+                    background-color: yellow;
                 }
             """)
 
-    # def eventFilter(self, widget, event):
-    #     if (event.type() == QtCore.QEvent.Type.KeyPress and widget is self.ui.AddrEdit ):
-    #         key = event.key()
-    #         if key == QtCore.Qt.Key.Key_Return:
-    #             print('return')
-    #         elif key == QtCore.Qt.Key.Key_Enter:
-    #             print('enter')
-    #         return True
-    #     return super().eventFilter(widget, event)
+    def clear_status(self):
+        self.ui.ClearStatus.setChecked(False)
+        self.ui.StatusInfoBox.clear()
+
+    def update_selections_count(self):
+        self.ui.SelectedHosts_label.setText(str(len(self.ui.FoundHosts_list.selectedIndexes())))
 
     def get_hosts_selections(self) -> (None | dict):
         if len(self.hosts) == 0:
-            self.print_status("Search for hosts first!")
+            self.print_status("Search for hosts first!", status_color="orange")
             return None
         
         selected_hosts = self.ui.FoundHosts_list.selectedItems()
@@ -65,7 +70,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
                 sel = sel.text().split()
                 hosts_dict[sel[0][0:-1]] = False
         else:
-            self.print_status("Nothing selected!")
+            self.print_status("Nothing selected!", status_color="orange")
             return None
         
         return hosts_dict
@@ -134,14 +139,13 @@ class ApplicationWindow(QtWidgets.QMainWindow):
     def get_servers(self):
         self.ui.FoundHosts_list.clear()
         AddrEditPalette = self.ui.AddrEdit.palette()
-        self.ui.progressBar.setValue(0)
 
         subnet = self.ui.AddrEdit.text()
         
         if not re.match("^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$)){3}$", subnet) :
             AddrEditPalette.setColor(QPalette.Base, QColor("red"))
             self.ui.AddrEdit.setPalette(AddrEditPalette)
-            self.print_status(f"{subnet} is incorrect subnet!")
+            self.print_status(f"{subnet} is incorrect subnet!", status_color="red")
             return
         
         self.port = self.ui.PortEdit.text()
@@ -149,7 +153,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         if self.port == "" or int(self.port) > 65535 :
             AddrEditPalette.setColor(QPalette.Base, QColor("red"))
             self.ui.PortEdit.setPalette(AddrEditPalette)
-            self.print_status(f"{self.port} is incorrect value!")
+            self.print_status(f"{self.port} is incorrect value!", status_color="red")
             return
 
         AddrEditPalette.setColor(QPalette.Base, QColor("white"))
@@ -165,9 +169,8 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         if len(self.hosts):
             self.append_hosts()
 
-        self.ui.progressBar.setValue(100)
-
     def get_local_addr(self):
+        self.ui.getLocalAddr.setChecked(False)
         ip_address = ""
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -176,19 +179,25 @@ class ApplicationWindow(QtWidgets.QMainWindow):
             sock.close()
         except Exception as e:
             return f"Nie udało się uzyskać adresu IP: {e}"
-        # net = socket.gethostbyname(socket.gethostname())    # requests.get('https://api.ipify.org').content.decode('utf8')
+
         ip_address = '.'.join(ip_address.split('.')[0:-1])
         self.ui.AddrEdit.setText(ip_address)
 
-    def print_status(self, status_text: str):
+    def print_status(self, status_text: str, status_color: str = "green"):
         if len(status_text):
+            self.ui.StatusIndicator.setStyleSheet(f"""
+                QCheckBox::indicator {{
+                    background-color: {status_color};
+                    border: 1px solid darkgrey;
+                }}
+            """)
             self.ui.StatusInfoBox.append(status_text)
             self.ui.StatusInfoBox.moveCursor(self.ui.StatusInfoBox.textCursor().End)
             self.ui.StatusInfoBox.ensureCursorVisible()
 
     def append_hosts(self):
         for server in self.hosts:
-            self.ui.FoundHosts_list.addItem(f"{server[0]}: {server[1]}")
+            self.ui.FoundHosts_list.addItem("{}: {}".format(server[0], server[1].rstrip('\x00')))
 
 def simple_communication(hosts_ips: dict, port: str, command: str, expected_response: str = "OK") -> dict:
     hosts_dict = hosts_ips

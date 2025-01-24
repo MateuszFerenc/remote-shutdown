@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>770</width>
-    <height>540</height>
+    <height>500</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>770</width>
-    <height>540</height>
+    <height>500</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>770</width>
-    <height>540</height>
+    <height>500</height>
    </size>
   </property>
   <property name="font">
@@ -54,7 +54,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>54</y>
+      <y>27</y>
       <width>131</width>
       <height>17</height>
      </rect>
@@ -77,12 +77,15 @@
     <property name="checkable">
      <bool>true</bool>
     </property>
+    <property name="autoExclusive">
+     <bool>false</bool>
+    </property>
    </widget>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>128</y>
+      <y>101</y>
       <width>111</width>
       <height>16</height>
      </rect>
@@ -102,7 +105,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>150</y>
+      <y>123</y>
       <width>131</width>
       <height>16</height>
      </rect>
@@ -122,7 +125,7 @@
     <property name="geometry">
      <rect>
       <x>140</x>
-      <y>128</y>
+      <y>101</y>
       <width>61</width>
       <height>16</height>
      </rect>
@@ -135,14 +138,14 @@
      </font>
     </property>
     <property name="text">
-     <string>hosts</string>
+     <string>0</string>
     </property>
    </widget>
    <widget class="QLabel" name="SelectedHosts_label">
     <property name="geometry">
      <rect>
       <x>160</x>
-      <y>150</y>
+      <y>123</y>
       <width>61</width>
       <height>16</height>
      </rect>
@@ -155,7 +158,7 @@
      </font>
     </property>
     <property name="text">
-     <string>selected</string>
+     <string>0</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_6">
@@ -165,7 +168,7 @@
     <property name="geometry">
      <rect>
       <x>240</x>
-      <y>5</y>
+      <y>0</y>
       <width>231</width>
       <height>31</height>
      </rect>
@@ -190,7 +193,7 @@
      <bool>false</bool>
     </property>
     <property name="text">
-     <string>Known hosts:</string>
+     <string>Known hosts</string>
     </property>
     <property name="scaledContents">
      <bool>false</bool>
@@ -203,7 +206,7 @@
     <property name="geometry">
      <rect>
       <x>19</x>
-      <y>100</y>
+      <y>73</y>
       <width>203</width>
       <height>23</height>
      </rect>
@@ -219,31 +222,11 @@
      <string>Search</string>
     </property>
    </widget>
-   <widget class="QProgressBar" name="progressBar">
-    <property name="geometry">
-     <rect>
-      <x>240</x>
-      <y>477</y>
-      <width>511</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Segoe UI Semibold</family>
-      <pointsize>12</pointsize>
-      <stylestrategy>PreferAntialias</stylestrategy>
-     </font>
-    </property>
-    <property name="value">
-     <number>24</number>
-    </property>
-   </widget>
    <widget class="QListWidget" name="FoundHosts_list">
     <property name="geometry">
      <rect>
       <x>240</x>
-      <y>40</y>
+      <y>33</y>
       <width>511</width>
       <height>371</height>
      </rect>
@@ -329,31 +312,11 @@
      <string>Shutdown</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_7">
-    <property name="geometry">
-     <rect>
-      <x>130</x>
-      <y>467</y>
-      <width>91</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Segoe UI Black</family>
-      <pointsize>14</pointsize>
-      <stylestrategy>PreferAntialias</stylestrategy>
-     </font>
-    </property>
-    <property name="text">
-     <string>Progress:</string>
-    </property>
-   </widget>
    <widget class="QTextEdit" name="StatusInfoBox">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>314</y>
+      <y>287</y>
       <width>191</width>
       <height>151</height>
      </rect>
@@ -389,7 +352,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>200</y>
+      <y>173</y>
       <width>81</width>
       <height>23</height>
      </rect>
@@ -397,7 +360,7 @@ p, li { white-space: pre-wrap; }
     <property name="font">
      <font>
       <family>Segoe UI Semibold</family>
-      <pointsize>13</pointsize>
+      <pointsize>12</pointsize>
       <stylestrategy>PreferAntialias</stylestrategy>
      </font>
     </property>
@@ -409,7 +372,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>125</x>
-      <y>200</y>
+      <y>173</y>
       <width>101</width>
       <height>23</height>
      </rect>
@@ -417,7 +380,7 @@ p, li { white-space: pre-wrap; }
     <property name="font">
      <font>
       <family>Segoe UI Semibold</family>
-      <pointsize>13</pointsize>
+      <pointsize>12</pointsize>
       <stylestrategy>PreferAntialias</stylestrategy>
      </font>
     </property>
@@ -432,7 +395,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>200</y>
+      <y>173</y>
       <width>16</width>
       <height>21</height>
      </rect>
@@ -454,20 +417,21 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>230</y>
-      <width>109</width>
-      <height>23</height>
+      <y>203</y>
+      <width>61</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Segoe UI Semibold</family>
-      <pointsize>13</pointsize>
+      <pointsize>12</pointsize>
       <stylestrategy>PreferAntialias</stylestrategy>
      </font>
     </property>
     <property name="text">
-     <string>Select range</string>
+     <string>Select
+range</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="SelectRange_checkBox">
@@ -477,7 +441,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>230</y>
+      <y>220</y>
       <width>16</width>
       <height>21</height>
      </rect>
@@ -489,50 +453,11 @@ p, li { white-space: pre-wrap; }
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="SelectOne_button">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>260</y>
-      <width>91</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Segoe UI Semibold</family>
-      <pointsize>13</pointsize>
-      <stylestrategy>PreferAntialias</stylestrategy>
-     </font>
-    </property>
-    <property name="text">
-     <string>Select one</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="SelectOne_checkBox">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>260</y>
-      <width>16</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Select one</string>
-    </property>
-    <property name="checkable">
-     <bool>false</bool>
-    </property>
-   </widget>
    <widget class="QLineEdit" name="AddrEdit">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>77</y>
+      <y>50</y>
       <width>115</width>
       <height>20</height>
      </rect>
@@ -612,9 +537,9 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>290</y>
+      <y>263</y>
       <width>211</width>
-      <height>181</height>
+      <height>201</height>
      </rect>
     </property>
     <property name="font">
@@ -627,12 +552,71 @@ p, li { white-space: pre-wrap; }
     <property name="title">
      <string>Status</string>
     </property>
+    <widget class="QRadioButton" name="ClearStatus">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>178</y>
+       <width>61</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI Semibold</family>
+       <pointsize>11</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+       <stylestrategy>PreferAntialias</stylestrategy>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Clear</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="StatusIndicator">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>178</y>
+       <width>71</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI Semibold</family>
+       <pointsize>11</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+       <stylestrategy>PreferAntialias</stylestrategy>
+      </font>
+     </property>
+     <property name="text">
+      <string>Status</string>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+    </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox_3">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>180</y>
+      <y>153</y>
       <width>221</width>
       <height>111</height>
      </rect>
@@ -647,12 +631,51 @@ p, li { white-space: pre-wrap; }
     <property name="title">
      <string>Select method</string>
     </property>
+    <widget class="QPushButton" name="SelectOne_button">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>67</y>
+       <width>91</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI Semibold</family>
+       <pointsize>12</pointsize>
+       <stylestrategy>PreferAntialias</stylestrategy>
+      </font>
+     </property>
+     <property name="text">
+      <string>Select one</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="SelectOne_checkBox">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>67</y>
+       <width>16</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Select one</string>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+    </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox_4">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>30</y>
+      <y>3</y>
       <width>221</width>
       <height>151</height>
      </rect>
@@ -665,7 +688,7 @@ p, li { white-space: pre-wrap; }
      </font>
     </property>
     <property name="title">
-     <string>Select method</string>
+     <string>Search IP</string>
     </property>
     <widget class="QLineEdit" name="PortEdit">
      <property name="geometry">
@@ -730,20 +753,16 @@ p, li { white-space: pre-wrap; }
    <zorder>SelectedHosts_label</zorder>
    <zorder>label_6</zorder>
    <zorder>SearchButton</zorder>
-   <zorder>progressBar</zorder>
    <zorder>FoundHosts_list</zorder>
    <zorder>TestHosts_button</zorder>
    <zorder>DisableHosts_button</zorder>
    <zorder>ShutdownHosts_button</zorder>
-   <zorder>label_7</zorder>
    <zorder>StatusInfoBox</zorder>
    <zorder>SelectAll_button</zorder>
    <zorder>UnselectAll_button</zorder>
    <zorder>SelectAllActive_checkBox</zorder>
    <zorder>SelectRange_button</zorder>
    <zorder>SelectRange_checkBox</zorder>
-   <zorder>SelectOne_button</zorder>
-   <zorder>SelectOne_checkBox</zorder>
    <zorder>AddrEdit</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -788,6 +807,13 @@ p, li { white-space: pre-wrap; }
    <property name="text">
     <string>&amp;Author</string>
    </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI Semibold</family>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
   </action>
   <action name="action_Documentation">
    <property name="text">
@@ -803,25 +829,35 @@ p, li { white-space: pre-wrap; }
    <property name="text">
     <string>&amp;Exit</string>
    </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI Semibold</family>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
   </action>
  </widget>
+ <tabstops>
+  <tabstop>getLocalAddr</tabstop>
+  <tabstop>AddrEdit</tabstop>
+  <tabstop>PortEdit</tabstop>
+  <tabstop>SearchButton</tabstop>
+  <tabstop>SelectAllActive_checkBox</tabstop>
+  <tabstop>SelectAll_button</tabstop>
+  <tabstop>UnselectAll_button</tabstop>
+  <tabstop>SelectRange_checkBox</tabstop>
+  <tabstop>SelectRange_button</tabstop>
+  <tabstop>SelectOne_checkBox</tabstop>
+  <tabstop>SelectOne_button</tabstop>
+  <tabstop>StatusInfoBox</tabstop>
+  <tabstop>ClearStatus</tabstop>
+  <tabstop>StatusIndicator</tabstop>
+  <tabstop>FoundHosts_list</tabstop>
+  <tabstop>TestHosts_button</tabstop>
+  <tabstop>DisableHosts_button</tabstop>
+  <tabstop>ShutdownHosts_button</tabstop>
+ </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>getLocalAddr</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>getLocalAddr</receiver>
-   <slot>toggle()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>117</x>
-     <y>68</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>70</x>
-     <y>72</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

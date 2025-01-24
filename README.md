@@ -37,3 +37,4 @@ python3 src\client\client.py
 - [x] pełne GUI klienta (Qt5)
 - [x] funkcjonalne GUI klienta (Qt5)
 - [x] automatyczna konwersja (w Makefile) z **.ui** do **.py** (Qt5)
+- [ ] Dodać tooltipy
