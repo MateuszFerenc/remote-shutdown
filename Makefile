@@ -1,5 +1,6 @@
 TARGET = server
-SOURCE = server
+
+TARGET_SSL = server_ssl
 
 DIR = ./src/server
 OUTPUT_DIR = $(DIR)
@@ -51,10 +52,16 @@ clean:
 run:	$(OUTPUT_DIR)/./$(TARGET).o
 	./$(OUTPUT_DIR)/./$(TARGET).o
 
+run_ssl:	$(OUTPUT_DIR)/./$(TARGET_SSL).o
+	./$(OUTPUT_DIR)/./$(TARGET_SSL).o
+
 gen_ui:	$(UI2PY_FILES)
 
 %.py: %.ui
 	$(PY) -m PyQt5.uic.pyuic -x $< -o $@
 
+gen_cert:
+	openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 -days 365
+
 .DEFAULTGOAL: all
-.PHONY: all build clean run gen_ui
+.PHONY: all build clean run gen_ui gen_cert run_ssl
