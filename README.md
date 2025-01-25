@@ -14,7 +14,7 @@ Usługa wyłączenia obejmuje:
 
 Pliki z rozszerzeniem **.c** są kompilowane za pomocą polecenia **make**.<br><br>
 Aby uruchomić pliki **.py** należy przygotować środowisko wirtualne:
-``` ps
+``` bash
 git clone --depth=1 https://git.cs.put.poznan.pl/inf151660/sieci2_projekt_mferenc.git
 
 cd sieci2_projekt_mferenc
@@ -50,7 +50,8 @@ Wybrany został protokół TCP, ponieważ zapewnia on:
 
 ***
 # Struktura plików
-```
+
+``` ps
 ../sieci2_projekt_mferenc/
 ├── .gitignore
 ├── Makefile
@@ -61,6 +62,7 @@ Wybrany został protokół TCP, ponieważ zapewnia on:
     │   ├── author_image.png
     │   ├── author_ui.py
     │   ├── author_ui.ui
+    │   ├── __client_base.py
     │   ├── client.py
     │   ├── client_ssl.py
     │   ├── main_ui.py
@@ -75,7 +77,7 @@ Konieczne:
 - [x] Podstawowa implementacja klienta
 - [x] Podstawowa implementacja serwera
 - [x] Przygotowanie Makefile
-- [ ] Przygotowanie dokumentacji (README.md)
+- [x] Przygotowanie dokumentacji (README.md)
 - [x] Podstawowy protokół komunikacji
 - [x] Pełen protokół komunikacji
 - [x] Bezpieczny protokół komunikacji (OpenSSL) [**nie można przetestować**]
@@ -84,8 +86,10 @@ Konieczne:
 - [x] pełne GUI klienta (Qt5)
 - [x] funkcjonalne GUI klienta (Qt5)
 - [x] automatyczna konwersja (w Makefile) z **.ui** do **.py** (Qt5)
+- [ ] Naprawić problem ze skalowaniem interfejsu
 
 Opcjonalne:
+- [x] Aplikacje klienta (z i bez SSLu) dziedziczą z klasy nadrzędnej (__clientbase.py) [dzięki temu kod się nie powtarza]
 - [ ] Dodać tooltipy
 - [ ] Dodać zmianę języków
 - [ ] Dodać wyświetlanie dokumentacji

@@ -68,15 +68,17 @@ int main ( void ){
         return EXIT_FAILURE;
     }
 
-
+    // Setting socket options (PORT can be reused immediately)
     if ( setsockopt(serverFd, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int)) < 0 ){
         fprintf(stderr, "setsockopt() failed! Error: %s\n", strerror(errno));
         close(serverFd);
         return EXIT_FAILURE;
     }
 
+    // Make server I/O operations nonblocking
 	makenonblocking(serverFd);
 
+    // Initialize addres structure
     server_addr_struct.sin_family = AF_INET;
     server_addr_struct.sin_port = htons(SERVER_PORT);
     server_addr_struct.sin_addr.s_addr = INADDR_ANY;
@@ -134,57 +136,57 @@ int main ( void ){
             current_event = events[ active_client ];
 
             if ( current_event.data.fd == serverFd ){
-                clientFd = accept(serverFd, (struct sockaddr *) &client_addr_struct, &socket_length);
+                clientFd = accept( serverFd, (struct sockaddr *) &client_addr_struct, &socket_length );
 
                 if ( clientFd == -1 ){
-                    fprintf(stderr, "accept() failed! Error: %s\n", strerror(errno));
+                    fprintf( stderr, "accept() failed! Error: %s\n", strerror(errno) );
 					alive = 0;
                     break;
                 }
 
 			    makenonblocking(clientFd);
 
-                printf("Got connection from %s:%d\n", inet_ntoa((struct in_addr)client_addr_struct.sin_addr), ntohs(client_addr_struct.sin_port));
+                printf( "Got connection from %s:%d\n", inet_ntoa((struct in_addr)client_addr_struct.sin_addr), ntohs(client_addr_struct.sin_port) );
 
                 event.data.fd = clientFd;
                 event.events = EPOLLIN | EPOLLONESHOT;
                 epoll_ctl( epollFd, EPOLL_CTL_ADD, clientFd, &event);
             } else
-            if( current_event.events & EPOLLIN ){
-                memset(buff, 0, REC_BUFF_SIZE);
+            if ( current_event.events & EPOLLIN ){
+                memset( buff, 0, REC_BUFF_SIZE );
     			read_len = __read( current_event.data.fd, buff, REC_BUFF_SIZE );
 
                 if(read_len){
                 	if(strncmp("HI SERVER", buff, 9) == 0)
 			        	FD_SET(current_event.data.fd, &greeting_set);
                     else 
-			    	if(strncmp("HOSTNAME", buff, 8) == 0)
+			    	if( strncmp("HOSTNAME", buff, 8) == 0 )
 			    		FD_SET(current_event.data.fd, &hostname_set);
 					else
-					if(strncmp("KILL", buff, 5) == 0)
+					if( strncmp("KILL", buff, 5) == 0 )
 			    		FD_SET(current_event.data.fd, &kill_set);
 					else
-					if(strncmp("SHUTDOWN", buff, 8) == 0)
+					if( strncmp("SHUTDOWN", buff, 8) == 0 )
 			    		FD_SET(current_event.data.fd, &shutdown_set);
 					else
-					if(strncmp("TEST", buff, 8) == 0)
+					if( strncmp("TEST", buff, 8) == 0 )
 			    		FD_SET(current_event.data.fd, &test_set);
 					else {
-					// if(strncmp("CLOSE", buff, 5) == 0){
+					//if(strncmp("CLOSE", buff, 5) == 0){
                         getpeername( current_event.data.fd, (struct sockaddr *) &client_addr_struct, &socket_length );
-						epoll_ctl( epollFd, EPOLL_CTL_DEL, current_event.data.fd, NULL);
+						epoll_ctl( epollFd, EPOLL_CTL_DEL, current_event.data.fd, NULL );
                         close( current_event.data.fd );
                         current_event.data.fd = -1;
-                        printf("Closed connection with %s:%d\n", inet_ntoa((struct in_addr)client_addr_struct.sin_addr), ntohs(client_addr_struct.sin_port));
+                        printf( "Closed connection with %s:%d\n", inet_ntoa((struct in_addr)client_addr_struct.sin_addr), ntohs(client_addr_struct.sin_port) );
 					}
                 }
                 
                 if ( current_event.data.fd > 0 ){
                     event.events = EPOLLOUT | EPOLLONESHOT;
-                    epoll_ctl( epollFd, EPOLL_CTL_MOD, current_event.data.fd, &event);
+                    epoll_ctl( epollFd, EPOLL_CTL_MOD, current_event.data.fd, &event );
                 }
             } else
-            if( current_event.events & EPOLLOUT ){
+            if ( current_event.events & EPOLLOUT ){
                 if ( FD_ISSET( current_event.data.fd, &greeting_set ) ){
     				write(current_event.data.fd, "HI CLIENT", 9);
     				FD_CLR(current_event.data.fd, &greeting_set );
@@ -199,9 +201,8 @@ int main ( void ){
 					if (__shutdown() == 0)
 						printf("Shutting down...");
 					else {
-						fprintf(stderr, "shutdown() failed! Error: %s\n", strerror(errno));
-						alive = 0;
-                    	break;
+						fprintf( stderr, "shutdown() failed! Error: %s\n", strerror(errno) );
+                        write( current_event.data.fd, "NOK", 3 );
 					}
     			} else 
 				if ( FD_ISSET( current_event.data.fd, &kill_set ) ){
@@ -210,14 +211,14 @@ int main ( void ){
     				break;
     			} else 
     			if ( FD_ISSET( current_event.data.fd, &hostname_set ) ){
-					memset(&buff, 0, HOST_NAME_MAX);
+					memset( &buff, 0, HOST_NAME_MAX );
                     gethostname( buff, HOST_NAME_MAX + 1 );
     				write( current_event.data.fd, buff, HOST_NAME_MAX );
     				FD_CLR( current_event.data.fd, &hostname_set );
     			} 
 				
-                event.events = EPOLLIN | EPOLLONESHOT;
-                epoll_ctl( epollFd, EPOLL_CTL_MOD, current_event.data.fd, &event);
+                event.events = EPOLLIN | EPOLLONESHOT | EPOLLET;
+                epoll_ctl( epollFd, EPOLL_CTL_MOD, current_event.data.fd, &event );
             }
         }
     }

@@ -276,8 +276,7 @@ int main ( void ){
 						printf("Shutting down...");
 					else {
 						fprintf( stderr, "shutdown() failed! Error: %s\n", strerror(errno) );
-						alive = 0;
-                    	break;
+						write( current_event.data.fd, "NOK", 3 );
 					}
     			} else 
 				if ( FD_ISSET( current_event.data.fd, &kill_set ) ){
