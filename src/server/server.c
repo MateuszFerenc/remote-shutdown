@@ -51,6 +51,11 @@ void makenonblocking(int fd){
 }
 
 int main ( void ){
+    if ( geteuid() != 0 ) {
+        fprintf(stderr, "Run program with root privileges!\n");
+        exit(1);
+    }
+    
     struct epoll_event event, current_event, events[MAX_EPOLL_EVENTS];
     struct sockaddr_in server_addr_struct, client_addr_struct;
     socklen_t socket_length = sizeof(client_addr_struct);
