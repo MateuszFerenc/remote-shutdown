@@ -27,8 +27,8 @@
 #define SERVER_PORT	21037U
 #define REC_BUFF_SIZE	96
 #define MAX_EPOLL_EVENTS    1
-#define CERT_FILE "cert.pem"
-#define KEY_FILE "key.pem"
+#define CERT_FILE "server_cert.pem"
+#define KEY_FILE "server_key.pem"
 
 int __shutdown( void ) {
     sync();
@@ -59,7 +59,8 @@ void makenonblocking(int fd){
 
 SSL_CTX* create_SSL_context( void ){
     // Create SSL context [server side SSLv23_server_method()]
-    SSL_CTX *ssl_context = SSL_CTX_new( SSLv23_server_method() );
+    // SSLv23_server_method()
+    SSL_CTX *ssl_context = SSL_CTX_new( TLS_server_method() );
     if ( ssl_context == NULL ){
         ERR_print_errors_fp(stderr);
         return NULL;
@@ -68,7 +69,7 @@ SSL_CTX* create_SSL_context( void ){
 }
 
 int configure_SSL_context(SSL_CTX *ctx) {
-    SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2);
+    SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2 | SSL_OP_IGNORE_UNEXPECTED_EOF | SSL_OP_ALL | SSL_OP_NO_SSLv2 );
     if (SSL_CTX_use_certificate_file(ctx, CERT_FILE, SSL_FILETYPE_PEM) <= 0 ||
         SSL_CTX_use_PrivateKey_file(ctx, KEY_FILE, SSL_FILETYPE_PEM) <= 0) {
         ERR_print_errors_fp(stderr);
@@ -212,7 +213,6 @@ int main ( void ){
                 SSL_set_fd( cSSL, clientFd );
 
                 if ( SSL_accept( cSSL ) <= 0 ){
-                    // fprintf( stderr, "SSL_accept() failed! Error:\n" );
                     fprintf( stderr, "SSL_accept() failed! Error: %s\n", strerror(errno) );
                     ERR_print_errors_fp( stderr );
                     close( clientFd );

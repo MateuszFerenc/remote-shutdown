@@ -1,16 +1,18 @@
-if __name__ == "__main__": 
-    print("This file should not be run standalone, import in client main app!")
-    abort()
-
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QPalette, QColor, QPixmap
 from main_ui import Ui_MainWindow
 from author_ui import Ui_AuthorPopup
+from documentation import Ui_Documentation
 from os import path, abort
 import socket
 import sys
 import threading
 import re
+import markdown
+
+if __name__ == "__main__": 
+    print("This file should not be run standalone, import in client main app!")
+    abort()
 
 file_path = path.dirname(path.abspath(sys.argv[0]))
 
@@ -23,6 +25,7 @@ class TCPCommunication:
     def __init__(self, communicate_method):
         self.communicate = communicate_method
 
+    # method to spawn workers for faster communication with many hosts
     def communicate_threaded(self, port: str, command: str, communication_type: CommunicationType, hosts_ips: dict = {}, expected_response: str = "OK", subnet: str = "") -> dict:
         hosts_dict = hosts_ips
 
@@ -57,6 +60,33 @@ class AuthorPopup(QtWidgets.QMainWindow):
         self.setWindowTitle("Author Info")
         self.ui.AuthorImage.setPixmap(QPixmap(path.join(file_path, "author_image.png")))
 
+class DocumentationWindow(QtWidgets.QMainWindow):
+    def __init__(self):
+        super(DocumentationWindow, self).__init__()
+
+        self.ui = Ui_Documentation()
+        self.ui.setupUi(self)
+        self.markdown_path = path.join(file_path, "..", "..", "README.md")
+        self.markdown_content = None        
+
+    def read_markdown(self):
+        with open(self.markdown_path, 'r', encoding="utf-8") as md_file:
+            self.markdown_content = md_file.read()
+        md = markdown.markdown(self.markdown_content, extensions=['extra', 'nl2br'])
+        document = f"""
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <meta charset=\"UTF-8\">
+            </head>
+            <body style=\"background-color: darkgrey;\">
+                {md}
+            </body>
+        </html>
+        """
+        
+        self.ui.MarkdownView.setHtml(document)
+
 
 class ApplicationWindow(QtWidgets.QMainWindow):
     def __init__(self, communication_method: TCPCommunication):
@@ -67,11 +97,9 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        # remove before commit !!!!!!!!!!!!
-        self.ui.AddrEdit.setText("127.0.0")
-        self.ui.PortEdit.setText("21037")
-
         self.AuthorPopup = AuthorPopup()
+        self.DocumentationWindow = DocumentationWindow()
+        self.DocumentationWindow.read_markdown()
 
         # setup clicked Event methods
         self.ui.SearchButton.clicked.connect(self.get_servers)
@@ -85,6 +113,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.ui.SelectOne_button.clicked.connect(self.selectOne)
         self.ui.ClearStatus.clicked.connect(self.clear_status)
         self.ui.action_Author.triggered.connect(lambda: self.AuthorPopup.show())
+        self.ui.action_Documentation.triggered.connect(lambda: self.DocumentationWindow.show())
         self.ui.action_Exit_2.triggered.connect(lambda: self.close())
 
         # setup selection changed Event methods
@@ -121,6 +150,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.ui.ClearStatus.setChecked(False)
         self.ui.StatusInfoBox.clear()
 
+    # return currently selected hosts
     def get_hosts_selections(self) -> (None | dict):
         if len(self.hosts) == 0:
             self.print_status("Search for hosts first!", status_color="orange")
@@ -144,27 +174,26 @@ class ApplicationWindow(QtWidgets.QMainWindow):
             return
         
         hosts_dict = self.tcp_communication.communicate_threaded(self.port, "TEST", TCPCommunication.CommunicationType.CHECK, hosts_dict, "OK")
-        #hosts_dict = self.tcp_communication(hosts_ips=hosts_dict, port=self.port, command="TEST")
         
         self.ResultsSummary(summary=hosts_dict, type="Test", positive="Ok", negative="Dead")
 
+    # send disable (server/service kill) request to selected hosts
     def disable_hosts(self):
         hosts_dict = self.get_hosts_selections()
         if hosts_dict is None:
             return
         
         hosts_dict = self.tcp_communication.communicate_threaded(self.port, "KILL", TCPCommunication.CommunicationType.CLOSE, hosts_dict, "OK")
-        #hosts_dict = self.tcp_communication(hosts_ips=hosts_dict, port=self.port, command="KILL")
         
         self.ResultsSummary(summary=hosts_dict, type="Disable", positive="Killed", negative="Fail")
 
+    # send shutdown request to selected hosts
     def shutdown_hosts(self):
         hosts_dict = self.get_hosts_selections()
         if hosts_dict is None:
             return
         
         hosts_dict = self.tcp_communication.communicate_threaded(self.port, "SHUTDOWN", TCPCommunication.CommunicationType.CLOSE, hosts_dict, "NOK")
-        # hosts_dict = self.tcp_communication(hosts_ips=hosts_dict, port=self.port, command="SHUTDOWN")
         
         self.ResultsSummary(summary=hosts_dict, type="Shutdown", positive="Ok", negative="Fail")
 
@@ -176,6 +205,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
             else:
                 self.print_status(f"{ip}: {negative}")
 
+    # selection mode indicator
     def checkBoxHandle(self, checkbox_instance: QtWidgets.QCheckBox):
         for checkbox in self.selectCheckBoxes:
             checkbox.setCheckable(True)
@@ -202,32 +232,41 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.ui.FoundHosts_list.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
         self.ui.FoundHosts_list.selectAll()
 
+    # read IP and PORT and try to discover reachable host over network
     def get_servers(self):
         self.ui.FoundHosts_list.clear()
         AddrEditPalette = self.ui.AddrEdit.palette()
 
+        # read IP subnet (text)
         subnet = self.ui.AddrEdit.text()
         
-        if not re.match("^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$)){3}$", subnet) :
+        # check incoming address against regexp xxx.xxx.xxx
+        if not re.match(r'^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$)){3}$', subnet) :
             AddrEditPalette.setColor(QPalette.Base, QColor("red"))
             self.ui.AddrEdit.setPalette(AddrEditPalette)
             self.print_status(f"{subnet} is incorrect subnet!", status_color="red")
             return
         
+        # read PORT (text)
         self.port = self.ui.PortEdit.text()
 
+        # check if port value is valid
         if self.port == "" or int(self.port) > 65535 :
             AddrEditPalette.setColor(QPalette.Base, QColor("red"))
             self.ui.PortEdit.setPalette(AddrEditPalette)
             self.print_status(f"{self.port} is incorrect value!", status_color="red")
             return
 
+        # reset text edit widget to default color
         AddrEditPalette.setColor(QPalette.Base, QColor("white"))
         self.ui.AddrEdit.setPalette(AddrEditPalette)
         self.ui.PortEdit.setPalette(AddrEditPalette)
 
         self.print_status(f"Discovering {subnet}:{self.port} subnet...")
+
+        # run network discovery using threaded search, on success IPs and names of the hosts will be returned
         self.hosts = self.tcp_communication.communicate_threaded(self.port, "HOSTNAME", TCPCommunication.CommunicationType.GET, subnet=subnet)
+        
         self.print_status(f"Found {len(self.hosts)} hosts.")
 
         self.ui.FoundHosts_label.setText(str(len(self.hosts)))
@@ -235,6 +274,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         if len(self.hosts):
             self.append_hosts()
 
+    # receive LAN IP address
     def get_local_addr(self):
         self.ui.getLocalAddr.setChecked(False)
         ip_address = ""
@@ -249,6 +289,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         ip_address = '.'.join(ip_address.split('.')[0:-1])
         self.ui.AddrEdit.setText(ip_address)
 
+    # print system status to status prompt
     def print_status(self, status_text: str, status_color: str = "green"):
         if len(status_text):
             self.ui.StatusIndicator.setStyleSheet(f"""
@@ -261,6 +302,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
             self.ui.StatusInfoBox.moveCursor(self.ui.StatusInfoBox.textCursor().End)
             self.ui.StatusInfoBox.ensureCursorVisible()
 
+    # append found hosts and their IPs to hosts list
     def append_hosts(self):
         for ip, hostname in self.hosts.items():
-            self.ui.FoundHosts_list.addItem(f"{ip}: {hostname}")
+            self.ui.FoundHosts_list.addItem("{}: {}".format(ip, hostname.rstrip('\x00')))

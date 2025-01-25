@@ -7,7 +7,8 @@ import ssl
 
 file_path = path.dirname(path.abspath(sys.argv[0]))
 
-context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+# context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+context = ssl.create_default_context()
 context.load_verify_locations(path.join(file_path, "..", "..", "cert.pem"))
 
 # with SSL    
@@ -60,4 +61,5 @@ if __name__ == "__main__":
     
     application = ApplicationWindow(communication_method=noSLL)
     application.show()
+    application.setWindowTitle("Remote Shutdown Client with SSL")
     sys.exit(app.exec_())

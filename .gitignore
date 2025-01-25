@@ -5,3 +5,5 @@
 **/.vscode
 **/compilation_output*.txt
 **/*.pem
+**/*.csr
+**/*.srl

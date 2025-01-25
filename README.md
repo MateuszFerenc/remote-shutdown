@@ -19,7 +19,7 @@ git clone --depth=1 https://git.cs.put.poznan.pl/inf151660/sieci2_projekt_mferen
 
 cd sieci2_projekt_mferenc
 python3 -m venv .venv
-. .venv\Scripts\activate
+.venv\Scripts\activate
 pip3 install -r requirements.txt
 
 # uruchomienie klienta (bez SSL)
@@ -54,22 +54,24 @@ Wybrany został protokół TCP, ponieważ zapewnia on:
 ``` ps
 ../sieci2_projekt_mferenc/
 ├── .gitignore
-├── Makefile
+├── Makefile                        # plik z regułami dla programu Make
 ├── README.md
-├── requirements.txt
+├── requirements.txt                # plik zawierający informacje dla menadżera pakietów Pythona (pip)
 └── src
     ├── client
     │   ├── author_image.png
-    │   ├── author_ui.py
-    │   ├── author_ui.ui
-    │   ├── __client_base.py
-    │   ├── client.py
-    │   ├── client_ssl.py
-    │   ├── main_ui.py
-    │   └── main_ui.ui
+    │   ├── author_ui.py            # plik GUI przetłumaczony na j. Python (okno informacji o autorze)
+    │   ├── author_ui.ui            # plik GUI w formacie XML (okno informacji o autorze)
+    │   ├── __client_base.py        # bazowa klasa aplikacji (backend)
+    │   ├── client.py               # klient bez SSL
+    │   ├── client_ssl.py           # klient z SSL
+    │   ├── documentation.py        # plik GUI przetłumaczony na j. Python (okno dokumentacji)
+    │   ├── documentation.ui        # plik GUI w formacie XML (okno dokumentacji)
+    │   ├── main_ui.py              # plik GUI przetłumaczony na j. Python (główne okno aplikacji)
+    │   └── main_ui.ui              # plik GUI w formacie XML (główne okno aplikacji)
     └── server
-        ├── server.c
-        └── server_ssl.c
+        ├── server.c                # serwer bez SSL
+        └── server_ssl.c            # serwer z SSL
 ```
 
 # TODO
@@ -80,16 +82,16 @@ Konieczne:
 - [x] Przygotowanie dokumentacji (README.md)
 - [x] Podstawowy protokół komunikacji
 - [x] Pełen protokół komunikacji
-- [x] Bezpieczny protokół komunikacji (OpenSSL) [**nie można przetestować**]
+- [x] Bezpieczny protokół komunikacji (OpenSSL) **zaimplementowany nie można przetestować**
 - [x] Zaimplementować wyłaczanie komputera przez aplikację serwera
 - [x] Przygotować wstępne GUI (Qt5)
-- [x] pełne GUI klienta (Qt5)
-- [x] funkcjonalne GUI klienta (Qt5)
-- [x] automatyczna konwersja (w Makefile) z **.ui** do **.py** (Qt5)
-- [ ] Naprawić problem ze skalowaniem interfejsu
+- [x] Pełne GUI klienta (Qt5)
+- [x] Funkcjonalne GUI klienta (Qt5)
+- [x] Automatyczna konwersja (w Makefile) z **.ui** do **.py** (Qt5)
 
 Opcjonalne:
 - [x] Aplikacje klienta (z i bez SSLu) dziedziczą z klasy nadrzędnej (__clientbase.py) [dzięki temu kod się nie powtarza]
 - [ ] Dodać tooltipy
 - [ ] Dodać zmianę języków
-- [ ] Dodać wyświetlanie dokumentacji
+- [x] Dodać wyświetlanie dokumentacji
+- [ ] Naprawić problem ze skalowaniem interfejsu **wymagane dalsze działania**

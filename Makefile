@@ -12,6 +12,7 @@ UI2PY_FILES = $(UI_FILES:.ui=.py)
 CC = gcc
 DEL = rm
 PY = python3
+SSL = openssl
 
 CFLAGS += -O3
 CFLAGS += -Wfatal-errors
@@ -30,6 +31,10 @@ CFLAGS += -Wunreachable-code
 # CFLAGS += -std=c17
 
 LDFLAGS += -lssl -lcrypto
+
+SSL_CAROOT_DESC = "/C=PL/ST=Wlkp/L=Poznan/O=none/CN=RemoteShutdown"
+SSL_CASERVER_DESC = "/C=PL/ST=Wlkp/L=Poznan/O=none/CN=server.RemoteShutdown"
+SSL_CACLIENT_DESC = "/C=PL/ST=Wlkp/L=Poznan/O=none/CN=client.RemoteShutdown"
 
 ifeq ($(DEBUG),1)
 COMPILATION_OUTPUT = 2>$(OUTPUT_DIR)/./"compilation_output_$(@F:.o=).txt"
@@ -61,7 +66,20 @@ gen_ui:	$(UI2PY_FILES)
 	$(PY) -m PyQt5.uic.pyuic -x $< -o $@
 
 gen_cert:
-	openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 -days 365
+	$(SSL) req -x509 -nodes -days 365 -newkey rsa:4096 -keyout ca_key.pem -out ca_cert.pem -subj $(SSL_CAROOT_DESC)
+
+	$(SSL) genrsa -out server_key.pem 4096
+	$(SSL) req -new -key server_key.pem -out server_cert.csr -subj $(SSL_CASERVER_DESC)
+	$(SSL) x509 -req -days 120 -in server_cert.csr -CA ca_cert.pem -CAkey ca_key.pem -CAcreateserial -out server_cert.pem
+
+	$(SSL) genrsa -out client_key.pem 4096
+	$(SSL) req -new -key client_key.pem -out client_cert.csr -subj $(SSL_CACLIENT_DESC)
+	$(SSL) x509 -req -days 120 -in client_cert.csr -CA ca_cert.pem -CAkey ca_key.pem -CAcreateserial -out client_cert.pem
+
+clean_certs:
+	-$(DEL) *.pem
+	-$(DEL) *.csr
+	-$(DEL) *.srl
 
 .DEFAULTGOAL: all
-.PHONY: all build clean run gen_ui gen_cert run_ssl
+.PHONY: all build clean run gen_ui gen_cert run_ssl clean_certs
